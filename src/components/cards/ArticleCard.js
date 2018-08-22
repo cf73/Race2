@@ -64,7 +64,8 @@ const TopBlock = styled.div`
 `
 
 const ArticleTitle = styled.div`
-  font-family: 'Rasa';
+  font-family: 'Lora';
+  font-style: italic;
   font-size: 36px;
   line-height: 36px;
 `

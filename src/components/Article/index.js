@@ -205,13 +205,14 @@ const Column = styled.div`
 `
 
 const Title = styled.div`
-  font-family: 'Muli';
+  font-family: 'Lora';
+  font-weight: 800;
   font-size: 48px;
   line-height: 48px;
 `
 
 const Author = styled.div`
-  font-family: Muli;
+  font-family: Roboto;
   font-size: 12px;
   line-height: 18px;
   letter-spacing: 0.22em;
@@ -223,14 +224,14 @@ const Author = styled.div`
 `
 
 const IntroText = styled.div`
-  font-family: 'Rasa';
+  font-family: 'Alegreya';
   font-size: 28px;
   line-height: 30px;
 `
 
 const Text = styled.div`
-  font-family: 'Rasa';
-  font-size: 20px;
+  font-family: 'Alegreya';
+  font-size: 18px;
   line-height: 26px;
 `
 
@@ -349,7 +350,7 @@ const Tags = styled.div`
 const Tag = styled.div`
   padding: 3px 15px;
 
-  font-family: Muli;
+  font-family: Roboto;
   font-size: 14px;
   line-height: 36px;
   letter-spacing: 0.15em;
