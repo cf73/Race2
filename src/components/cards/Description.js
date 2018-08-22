@@ -2,8 +2,8 @@ import React from 'react'
 import styled from 'styled-components'
 
 const Description = styled.div`
-  font-family: 'Tisa Pro';
-  font-size: 20px;
+  font-family: 'Rasa';
+  font-size: 22px;
   line-height: 24px;
 `;
 

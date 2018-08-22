@@ -64,7 +64,7 @@ const TopBlock = styled.div`
 `
 
 const ArticleTitle = styled.div`
-  font-family: 'Tisa Pro';
+  font-family: 'Rasa';
   font-size: 36px;
   line-height: 36px;
 `
@@ -95,7 +95,7 @@ const Ticker = styled.div`
   left: 0;
   bottom: 0;
 
-  font-family: Lato;
+  font-family: Muli;
   font-weight: normal;
   font-size: 12px;
   line-height: 30px;

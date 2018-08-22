@@ -205,13 +205,13 @@ const Column = styled.div`
 `
 
 const Title = styled.div`
-  font-family: 'Tisa Pro';
-  font-size: 36px;
+  font-family: 'Muli';
+  font-size: 48px;
   line-height: 48px;
 `
 
 const Author = styled.div`
-  font-family: Lato;
+  font-family: Muli;
   font-size: 12px;
   line-height: 18px;
   letter-spacing: 0.22em;
@@ -223,20 +223,20 @@ const Author = styled.div`
 `
 
 const IntroText = styled.div`
-  font-family: 'Tisa Pro';
-  font-size: 20px;
-  line-height: 28px;
+  font-family: 'Rasa';
+  font-size: 28px;
+  line-height: 30px;
 `
 
 const Text = styled.div`
-  font-family: 'Tisa Pro';
-  font-size: 17px;
-  line-height: 24px;
+  font-family: 'Rasa';
+  font-size: 20px;
+  line-height: 26px;
 `
 
 const ContentBar = styled(Column)`
   flex: 1;
-  padding: 60px 80px;
+  padding: 60px 90px;
 
   z-index: 10;
 
@@ -349,10 +349,10 @@ const Tags = styled.div`
 const Tag = styled.div`
   padding: 3px 15px;
 
-  font-family: Lato;
+  font-family: Muli;
   font-size: 14px;
   line-height: 36px;
-  letter-spacing: 0.22em;
+  letter-spacing: 0.15em;
 
   text-transform: uppercase;
 
@@ -361,7 +361,7 @@ const Tag = styled.div`
   margin-right: 15px;
   margin-top: 15px;
 
-  border-radius: 3px;
+  border-radius: 9px;
   background-color: ${white};
 `
 
