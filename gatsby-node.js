@@ -28,6 +28,7 @@ exports.createPages = ({ graphql, boundActionCreators }) => {
     const clipTemplate = path.resolve(`src/templates/clip.js`)
     const interviewTemplate = path.resolve(`src/templates/interview.js`)
     const qaTemplate = path.resolve(`src/templates/qa.js`)
+    const lessonTemplate = path.resolve(`src/templates/lesson.js`)
     
     // Query for markdown nodes to use in creating pages.
     graphql(
@@ -88,11 +89,20 @@ exports.createPages = ({ graphql, boundActionCreators }) => {
               }
             }
           }
+
           allNodeClip {
             edges {
               node {
                 id
                 title
+              }
+            }
+          }
+
+          allNodeLessonPlan {
+            edges {
+              node {
+                ...LessonPlanFragment
               }
             }
           }
@@ -172,6 +182,16 @@ exports.createPages = ({ graphql, boundActionCreators }) => {
         createPage({
           path: `/clips/${kebabCase(edge.node.title)}`, // required
           component: clipTemplate,
+          context: {
+            id: edge.node.id,
+          },
+        })
+      })
+
+      _.each(result.data.allNodeLessonPlan.edges, edge => {
+        createPage({
+          path: `/lessons/${kebabCase(edge.node.title)}`, // required
+          component: lessonTemplate,
           context: {
             id: edge.node.id,
           },

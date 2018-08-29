@@ -14,6 +14,7 @@ export {
   OverlayBody 
 } from './overlay'
 
+export SVGLogo from './SVGLogo'
 export SVGChevron from './SVGChevron'
 export SVGArrow from './SVGArrow'
 export SVGLink from './SVGLink'
@@ -26,6 +27,7 @@ export Article from './Article'
 export Interview from './Interview'
 export QA from './QA'
 export Clip from './Clip'
+export LessonPlan from './LessonPlan'
 
 export Teaching from './Teaching'
 export CollectionPage from './CollectionPage'

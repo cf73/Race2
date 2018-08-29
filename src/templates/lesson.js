@@ -2,7 +2,7 @@ import React from "react"
 import styled from 'styled-components'
 import {
   Layout,
-  Article
+  LessonPlan
 } from '../components'
 
 import { graphql } from 'gatsby'
@@ -21,14 +21,14 @@ const Container = styled.div`
 
 export default ({ data, location }) => <Layout location={location}>
   <Container>
-    <Article data={data} />
+    <LessonPlan data={data} />
   </Container>
 </Layout>
 
 export const pageQuery = graphql`
-  query singleArticleQuery($id: String) {
-    nodeArticle(id: { eq: $id }) {
-      ...FullArticleFragment
+  query singleLessonQuery($id: String) {
+    nodeLessonPlan(id: { eq: $id }) {
+      ...LessonPlanFragment
     }
   }
 `
