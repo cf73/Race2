@@ -1,0 +1,24 @@
+language: node_js
+node_js:
+  - "stable"
+branches:
+  only:
+  - master
+cache:
+  directories:
+  - node_modules
+deploy:
+  provider: s3
+  access_key_id: $AWS_ACCESS_KEY
+  secret_access_key: $AWS_SECRET_KEY
+  bucket: "racepi"
+  skip_cleanup: true
+  local_dir: public
+  acl: public_read
+before_script:
+  - "npm i -g gatsby"
+  - "npm i"
+script:
+  - "npm run test"
+after_success:
+  - "npm run deploy"

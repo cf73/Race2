@@ -1,5 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
+import kebabCase from 'lodash/kebabCase'
 import get from 'lodash/get'
 
 import {
@@ -53,12 +54,11 @@ const TopContainer = styled(Row)`
 `
 
 const Title = styled.div`
-  font-family: Lato;
+  font-family: 'Neuton';
   font-size: 36px;
   font-weight: 600;
   line-height: 36px;
 
-  letter-spacing: 0.02em;
 
   padding-top: 60px;
   padding-bottom: 60px;
@@ -115,7 +115,7 @@ const ContentPane = styled.div`
 `
 
 const SmallTitle = styled.div`
-  font-family: Lato;
+  font-family: 'Quicksand';
   font-size: 24px;
   font-weight: 600;
   line-height: 30px;
@@ -133,12 +133,15 @@ const Text = styled.div`
   & > ul > li {
     margin-left: -1em;
   }
-
+  font-size: 20px;
+  line-height: 28px;
+  font-family: 'Neuton';
   margin-bottom: 20px;
 `
 
 const SubTitle = styled.div`
-  font-family: Lato;
+  font-family: 'Quicksand';
+  font-weight: 500;
   font-size: 12px;
   line-height: 28px;
   letter-spacing: 0.22em;
@@ -171,7 +174,8 @@ const Tags = styled(Column)`
 const Tag = styled.div`
   padding: 3px 15px;
 
-  font-family: Lato;
+  font-family: 'Quicksand';
+  font-weight: 500;
   font-size: 14px;
   line-height: 36px;
   letter-spacing: 0.22em;
@@ -188,7 +192,8 @@ const Tag = styled.div`
 `
 
 const Grade = styled.div`
-  font-family: Lato;
+  font-family: 'Quicksand';
+  font-weight: 500;
   font-size: 30px;
   line-height: 30px;
 
@@ -263,6 +268,7 @@ const ViewButton = styled(Row)`
 const ViewLessonPlan = props => <ViewButton {...props}>
   <FiledUnderLink 
     color={red}
+    to={props.to}
     style={{paddingTop: 0}}
   >
     View Lesson Plan
@@ -300,6 +306,8 @@ class PlanPane extends React.Component {
 
     const grade = get(this, 'props.data.field_grade_levels.processed')
     const subjects = get(this, 'props.data.field_subjects.processed')
+
+    const lessonLink = `/lessons/${kebabCase(title)}`
     
     return (
       <Container>
@@ -339,7 +347,7 @@ class PlanPane extends React.Component {
             </SideColumn>
 
             <BottomRow>
-              <ViewLessonPlan />
+              <ViewLessonPlan to={lessonLink}/>
             </BottomRow>
           </Column>
         </ContentPane>

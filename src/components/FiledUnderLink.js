@@ -20,8 +20,9 @@ const FiledUnderLinkContainer = styled(Link)`
   padding-right: 10px;
   padding-top:9px;
 
-  font-family: Lato;
-  font-size: 18px;
+  font-family: 'Quicksand';
+  font-weight: 500;
+  font-size: 24px;
   
   letter-spacing: 0.02em;
   text-transform: capitalize;

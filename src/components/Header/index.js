@@ -5,9 +5,13 @@ import styled from 'styled-components'
 import Menu from './Menu'
 
 import {
+  SVGLogo,
+} from '../'
+
+import {
   blackWithOpacity,
   white,
-} from '../../colors.js'
+} from '../../colors'
 
 const Container = styled.div`
   position: fixed;
@@ -21,8 +25,6 @@ const Container = styled.div`
   flex-direction: row;
   align-items: center;
   
-  justify-content: space-around;
-
   background-color: ${blackWithOpacity(0.92)};
 
   height: 60px;
@@ -43,7 +45,23 @@ const Container = styled.div`
   transition: all 0.3s ease-out;
 `
 
+const ItemsContainer = styled.div`
+  
+
+  @media (min-width: 1025px) { /* desktop */
+  
+  }
+
+  @media (max-width: 812px) { /* mobile */
+    display: none;
+  }
+`
+
+// background-color: ${ props => `#${Math.floor(Math.random()*16777215).toString(16)}`};
+
 const Item = styled(Link)`
+  flex: 1;
+
   text-aligment: center;
   text-decoration: none;
 
@@ -57,11 +75,12 @@ const Item = styled(Link)`
   line-height: 30px;
   letter-spacing: 0.22em;
 
-  margin-right: 0;
+  margin-right: 1em;
 
   @media (min-width: 1025px) { /* desktop */
-    margin-right: 45px;
-    font-size: 18px;
+    /*margin-right: 45px;*/
+    margin-right: 2vw;
+    font-size: 14px;
     letter-spacing: 0.12em;
   }
 
@@ -77,6 +96,17 @@ const MobileItem = styled(Item)`
     display: block;
     font-size: 15pt;
     letter-spacing: 5px;
+  }
+`
+
+const Logo = styled.div`
+  flex: 1;
+  padding-top: 9px;
+  padding-left: 36px;
+  padding-right: 36px;
+
+  @media (max-width: 812px) { /* mobile */
+    display: none;
   }
 `
 
@@ -108,9 +138,14 @@ class Header extends React.Component {
           open={open}
           onClick={ e => this.setState({open: !open})}
         />
-        {
-          pages.map( ({name, link}, index) => <Item href={link} key={index}>{name}</Item>)
-        }
+        <Logo><Link href='/'><SVGLogo/></Link></Logo>
+        <ItemsContainer>
+          {
+            pages.map( ({name, link}, index) => <Item href={link} key={index}>{name}</Item>)
+          }
+        </ItemsContainer>
+
+        { open && <Link href='/'><SVGLogo/></Link> }
         {
           open && pages.map( ({name, link}, index) => <MobileItem to={link} key={index}>{name}</MobileItem>)
         }

@@ -38,7 +38,7 @@ const Header = styled.div`
 
   z-index: 1;
 
-  padding-left: 138px;
+  padding-left: 60px;
 
   height: calc(100vh - 200px);
   display: flex;
@@ -96,7 +96,7 @@ const ChevronContainer = styled.div`
   cursor: pointer;
 
   position: absolute;
-
+  display: none;
   left: -25px;
   
   width: 16px;
@@ -133,7 +133,6 @@ const Title = styled.div`
   font-weight: 400;
   line-height: 60px;
 
-  padding-top: 12px;
   padding-bottom: 18px;
 `
 
@@ -141,10 +140,13 @@ const TopLink = styled(Link)`
   font-family: 'Quicksand';
   font-size: 17px;
   font-weight: 500;
-  line-height: 60px;
+  line-height: 30px;
   letter-spacing: 0.13em;
   text-transform: uppercase;
-  color: ${red};
+  border-bottom: solid 2px;
+  
+  margin-bottom: 30px;
+  color: ${white};
 `
 
 const Description = styled.div`
@@ -155,6 +157,9 @@ const Description = styled.div`
   color: ${white};
 
   max-width: 600px;
+  & p {
+    margin: 0;
+  }
 `
 
 const Subthemes = styled.div`

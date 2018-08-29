@@ -170,7 +170,8 @@ const TextContainer = styled.div`
   padding-top: 40vh;
 
   @media (min-width: 1025px) { /* desktop */
-    width: 1000px;
+    min-width: 1000px;
+    max-width: 1200px;
     padding-top: 87vh;
   }
 
@@ -200,6 +201,7 @@ const TextInnerContainer = styled.div`
   &::before {
     content: '${TICKER}';
     position: absolute;
+    display: none;
 
     height: 39px;
 
@@ -231,17 +233,24 @@ const Column = styled.div`
   flex-direction: column;
 `
 
+const Filing = styled.div`
+  margin-left: -60px;
+  margin-top: -30px;
+  margin-bottom: 30px;
+`
+
 const Title = styled.div`
-  font-family: 'Quicksand';
-  font-size: 42px;
+  font-family: 'Neuton';
+  font-size: 48px;
   line-height: 48px;
 `
 
 const Author = styled.div`
-  font-family: Lato;
+  font-family: 'Quicksand';
+  font-weight: 500;
   font-size: 12px;
   line-height: 18px;
-  letter-spacing: 0.22em;
+  letter-spacing: 0.12em;
 
   text-transform: uppercase;
 
@@ -250,14 +259,14 @@ const Author = styled.div`
 `
 
 const Text = styled.div`
-  font-family: 'Quicksand';
-  font-size: 15px;
-  line-height: 24px;
+  font-family: 'Neuton';
+  font-size: 20px;
+  line-height: 28px;
 `
 
 const ContentBar = styled(Column)`
   flex: 1;
-  padding: 60px 80px;
+  padding: 60px 90px;
 
   z-index: 10;
 
@@ -319,13 +328,13 @@ const AuthorImage = styled.div`
 
 const Bio = styled.div`
   padding: 15px;
-
-  font-family: Lato;
-  font-style: italic;
-  font-size: 14px;
-  line-height: 18px;
-
-  margin-bottom: 60px;
+  font-family: Neuton;
+  font-weight: 400;
+  font-size: 18px;
+  line-height: 21px;
+  & p {
+    margin: 0;
+  }
 `
 
 const SubTitle = styled.div`
@@ -568,7 +577,7 @@ const AllEntitiesContainer = styled(Row)`
 
 const AllEntitiesText = `All ${TICKER.toLowerCase()}s`
 const AllEntities = () => <AllEntitiesContainer>
-  <FiledUnderLink color={white}>{AllEntitiesText}</FiledUnderLink>
+  <FiledUnderLink color={white} to='/interviews'>{AllEntitiesText}</FiledUnderLink>
 </AllEntitiesContainer>
 
 ///
@@ -604,10 +613,7 @@ class Interview extends React.Component {
       <SideBar>
         <AuthorImage background={authorImage}/>
         <Bio dangerouslySetInnerHTML={{ __html: authorBio }}/>
-        <SubTitle>filed under:</SubTitle>
-        {
-          filedUnder && filedUnder.map( ({name, link}, key) => <FiledUnderLink key={key} to={link}>{name}</FiledUnderLink>)
-        }
+        
         <SubTitle style={{marginTop: 90}}>explore:</SubTitle>
         <Tags>
           {
@@ -683,8 +689,14 @@ class Interview extends React.Component {
           <TextContainer>
             <TextInnerContainer>
               <ContentBar>
+                <Filing>
+                  <SubTitle>filed under:</SubTitle>
+                    {
+                      filedUnder && filedUnder.map( ({name, link}, key) => <FiledUnderLink key={key} to={link}>{name}</FiledUnderLink>)
+                    }
+                  </Filing>
                 <Title>{title.trim()}</Title>
-                <Author>by {author}</Author>
+                {/* <Author>by {author}</Author> */}
                 <Text dangerouslySetInnerHTML={{ __html: text}}/>
                 <TextFooter>
                   <LocalBackTo />

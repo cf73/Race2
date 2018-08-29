@@ -223,16 +223,7 @@ class Teaching extends React.Component {
 
     const relatedContent = getCards({articles, interviews})
 
-    const handouts = [
-      {
-        name: '10 Things to Know About Race',
-        link: '#'
-      },
-      {
-        name: 'Another handout…',
-        link: '#'
-      }
-    ]
+    const handouts = get(this, `props.data.allNodeHandout.edges`).map(edge => edge.node)
 
     const links = [
       {
@@ -273,9 +264,9 @@ class Teaching extends React.Component {
             <SecondTitle>Handouts</SecondTitle>
             <Column>
               {
-                handouts.map( ({name, link},key) => <LocalLink to={link} key={'handout'+key}>
+                handouts.map( ({title, link},key) => <LocalLink to={link} key={'handout'+key}>
                   <SVGPDF style={{width: 25, marginRight: 20}}/>
-                  {name}
+                  {title}
                 </LocalLink>)
               }
             </Column>

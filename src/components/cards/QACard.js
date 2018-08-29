@@ -59,6 +59,7 @@ const ArrowContainer = styled.div`
   bottom: 15px;
   right: 17px;
 
+  display: none;
   width: 25px;
   height: 20px;
 `

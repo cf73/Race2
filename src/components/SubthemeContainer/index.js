@@ -117,6 +117,7 @@ const AllEntities = styled.div`
   position: absolute;
   top: 30px;
   right: 50px;
+  z-index: 999999999999;
 `
 
 const FlipContainer = styled(FlipMove)`

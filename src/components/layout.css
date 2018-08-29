@@ -18,10 +18,11 @@ body.modal-open {
   overflow: hidden;
 }
 
+/* this should not be defined on a global level
 strong {
   font-weight: 700;
   position: relative;
   top:14px;
-}
+}*/
 
 @import url('https://fonts.googleapis.com/css?family=Neuton:200,300,400,400i,700,800|Quicksand:300,400,500,700');

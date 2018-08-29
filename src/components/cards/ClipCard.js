@@ -1,6 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
 import kebabCase from 'lodash/kebabCase'
+import get from 'lodash/get'
 
 import Description from './Description'
 import Card from '../Card'
@@ -43,7 +44,7 @@ const TopImage = styled.div`
   z-index: -1;
 
   width: 100%;
-  height: 221px;
+  height: 291px;
   
   background: ${ props => props.background ? `url(${props.background}) center no-repeat` : null };
   background-size: cover;
@@ -53,15 +54,12 @@ const TopBlock = styled.div`
   position: relative;
 
   width: auto;
-  height: 221px;
+  height: 291px;
 
   display: flex;
   flex-direction: row;
-  justify-content: center;
-  align-items: center;
-
+ 
   padding-right: 15px;
-  padding-left: 15px;
 `
 
 const InnerContainer = styled.div`
@@ -114,6 +112,7 @@ const ArrowContainer = styled.div`
   bottom: 15px;
   right: 17px;
 
+  display: none;
   min-width: 25px;
   height: 20px;
 `
@@ -150,12 +149,13 @@ const Arrow = () => <ArrowContainer><SVGArrow color={red}/></ArrowContainer>
 
 export class ClipCard extends React.Component {
   render() {
-    const { data = { relationships: {} }, onOpen } = this.props
-    const clip = data;
-    const link = `/clips/${kebabCase(clip.title)}`
-    const description = clip.title
-    const background = clip.relationships.field_poster_image.localFile.publicURL
-    const fromEpisode = 'from episode 1'
+    const { onOpen } = this.props
+    const title = get(this, 'props.data.title')
+    const link = `/clips/${kebabCase(title)}`
+    const description = title
+    const background = get(this, 'props.data.relationships.field_poster_image.localFile.publicURL')
+    const field_episode = get(this, 'props.data.field_episode')
+    const fromEpisode = `from episode ${field_episode}`
 
     // const {title, uri} = clip.field_external_video_url
 
@@ -164,7 +164,7 @@ export class ClipCard extends React.Component {
         <TopImage background={background}/>
         <InnerContainer>
           <TopBlock>
-            <TopTicker>{fromEpisode}</TopTicker>
+            { field_episode && <TopTicker>{fromEpisode}</TopTicker> }
             <PlayButton />
             <Ticker>film clip</Ticker>
           </TopBlock>
