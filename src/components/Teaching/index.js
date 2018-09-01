@@ -207,7 +207,8 @@ const LocalLink = styled(Link)`
   display: flex;
   flex-direction: row;
 
-  font-family: Lato;
+  font-family: 'Quicksand';
+  font-weight: 500;
   font-size: 30px;
   line-height: 42px;
   letter-spacing: 0.02em;
@@ -223,27 +224,9 @@ class Teaching extends React.Component {
 
     const relatedContent = getCards({articles, interviews})
 
-    const handouts = [
-      {
-        name: '10 Things to Know About Race',
-        link: '#'
-      },
-      {
-        name: 'Another handout…',
-        link: '#'
-      }
-    ]
+    const handouts = get(this, `props.data.allNodeHandout.edges`).map(edge => edge.node)
 
-    const links = [
-      {
-        name: 'External website 1',
-        link: 'https://youtube.com'
-      },
-      {
-        name: 'External website 2',
-        link: 'https://google.com'
-      },
-    ]
+    const links = get(this, `props.data.allNodeExternalLink.edges`).map(edge => edge.node)
 
     return (
       <Container>
@@ -273,9 +256,9 @@ class Teaching extends React.Component {
             <SecondTitle>Handouts</SecondTitle>
             <Column>
               {
-                handouts.map( ({name, link},key) => <LocalLink to={link} key={'handout'+key}>
+                handouts.map( ({title, link},key) => <LocalLink to={link} key={'handout'+key}>
                   <SVGPDF style={{width: 25, marginRight: 20}}/>
-                  {name}
+                  {title}
                 </LocalLink>)
               }
             </Column>
@@ -283,9 +266,9 @@ class Teaching extends React.Component {
             <SecondTitle>External Links</SecondTitle>
             <Column>
               {
-                links.map( ({name, link},key) => <LocalLink to={link} key={'handout'+key}>
+                links.map( ({title, uri},key) => <LocalLink to={uri} key={'link'+key}>
                   <SVGLink style={{width: 25, marginRight: 20}}/>
-                  {name}
+                  {title}
                 </LocalLink>)
               }
             </Column>

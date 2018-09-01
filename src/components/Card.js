@@ -21,7 +21,7 @@ class CardWrapper extends React.Component {
   }
 }
 
-const WIDTH = 492;
+const WIDTH = 462;
 const HEIGHT = 341;
 
 const CardGridItem = styled.div`

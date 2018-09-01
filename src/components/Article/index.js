@@ -4,7 +4,11 @@ import kebabCase from 'lodash/kebabCase'
 import get from 'lodash/get'
 
 import {
-  FiledUnderLink
+  FiledUnderLink,
+  Overlay,
+  OverlayBody,
+  CloseButton,
+  TagTitle
 } from '../'
 
 import getCards from '../../utils/getCards'
@@ -17,6 +21,11 @@ import {
   red,
   softblack,
 } from '../../colors'
+
+import reorder from '../../utils/reorder'
+import shuffle from '../../utils/shuffle'
+
+const range = require('range')
 
 const TICKER = 'ARTICLE'
 const gradient = `linear-gradient(to bottom, #D9B0B0 0%, rgba(109,88,88,0.92) 100%)`
@@ -317,11 +326,13 @@ const AuthorImage = styled.div`
 
 const Bio = styled.div`
   padding: 15px;
-  padding-top:0;
   font-family: Neuton;
   font-weight: 400;
   font-size: 18px;
   line-height: 21px;
+  & p {
+    margin: 0;
+  }
 `
 
 const SubTitle = styled.div`
@@ -365,6 +376,7 @@ const Tags = styled.div`
 `
 
 const Tag = styled.div`
+  cursor: pointer;
   padding: 3px 15px;
 
   font-family: Quicksand;
@@ -510,7 +522,12 @@ const getFiledUnder = array => {
 const getTags = array => {
   let results = []
 
-  results = array.map( ({name}) => name )
+  results = array.map( ({name, relationships}) => {
+    return {
+      name,
+      cards: relationships
+    }
+  })
 
   return results
 }
@@ -520,6 +537,7 @@ const getRelatedContent = array => {
     articles: [],
     clips: [],
     faqs: [],
+    interviews: [],
   }
 
   array && array.forEach(item => {
@@ -532,6 +550,9 @@ const getRelatedContent = array => {
         break
       case 'node__clip':
         cards.clips.push(item)
+        break
+      case 'node__interview':
+        cards.interviews.push(item)
         break
       default:
         break;
@@ -568,7 +589,50 @@ const AllEntities = () => <AllEntitiesContainer>
 ///
 
 class Article extends React.Component {
+
+  constructor(props) {
+    super(props);
+  
+    this.state = {
+      tagName: null,
+      tagCards: []
+    };
+  }
+
+  renderOverlay = (name, cards) => {
+    const tagsContent = getCards(cards)
+    const order = shuffle(range.range(tagsContent.length))
+    const shuffledCards = reorder(tagsContent, order)
+
+    return (
+      <Overlay visible={name}>
+        <OverlayBody>
+          <Row>
+            <Row style={{flex: 1, justifyContent: 'center'}}>
+              <TagTitle>{name}</TagTitle>
+            </Row>
+            <CloseButton
+              style={{marginRight: 30}}
+              color={black}
+              simple={true} 
+              onClick={ () => this.setState({
+                tagName: null,
+                tagCards: []
+              })}
+            />
+          </Row>
+          <CardsContainer>
+            { shuffledCards }
+          </CardsContainer>
+        </OverlayBody>
+      </Overlay>
+    )
+  }
+
+  ///
+
   render() {
+    const {tagName, tagCards} = this.state
     const {overlay} = this.props
     const nodeName = 'nodeArticle'
 
@@ -596,17 +660,30 @@ class Article extends React.Component {
 
     ///
 
+    const renderTags = () => (
+      <Tags>
+        {
+          tags.map( ({name, cards}, key) => <Tag
+            key={key}
+            onClick={ () => this.setState({
+                tagName: name,
+                tagCards: cards
+              })
+            }
+          >
+            {name}
+          </Tag>)
+        }
+      </Tags>
+    )
+
     const DesktopSideBar = () => (
       <SideBar>
         <AuthorImage background={authorImage}/>
         <Bio dangerouslySetInnerHTML={{ __html: authorBio }}/>
         
         <SubTitle style={{marginTop: 90}}>explore:</SubTitle>
-        <Tags>
-          {
-            tags.map( (name, key) => <Tag key={key}>{name}</Tag>)
-          }
-        </Tags>
+        { renderTags() }
         <SubTitle style={{marginTop: 90}}>see also:</SubTitle>
 
         <CardsContainer>
@@ -637,11 +714,7 @@ class Article extends React.Component {
 
           <MobileColumn>
             <SubTitle>explore:</SubTitle>
-            <Tags>
-              {
-                tags.map( (name, key) => <Tag key={key}>{name}</Tag>)
-              }
-            </Tags>
+            { renderTags() }
           </MobileColumn>
         </MobileRow>
 
@@ -660,6 +733,9 @@ class Article extends React.Component {
 
     return (
       <Container>
+        {
+          this.renderOverlay(tagName, tagCards)
+        }
         <TopContainer overlay={overlay}>
           <AllEntities />
           <MainImage background={background} overlay={overlay}/>

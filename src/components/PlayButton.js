@@ -4,6 +4,8 @@ const SIZE = 46
 
 const PlayButton = styled.div`
   position: relative;
+  top: 15px;
+  left: 15px;
 
   width: ${props => props.size ? props.size : SIZE}px;
   height: ${props => props.size ? props.size : SIZE}px;

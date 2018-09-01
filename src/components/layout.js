@@ -3,7 +3,10 @@ import Helmet from "react-helmet"
 import { StaticQuery, graphql } from "gatsby"
 import styled from 'styled-components'
 import Typekit from 'react-typekit'
+
 import Header from '../components/Header'
+import Footer from '../components/Footer'
+
 import { backgroundColor } from '../colors'
 
 import './layout.css'
@@ -36,6 +39,7 @@ export default ({ children, location, header = true }) => (
         <Typekit kitId="pte4pny" />
         { header && <Header data={data} pathname={location.pathname} /> }
         <Container> {children} </Container>
+        <Footer />
       </>
     )}
   />

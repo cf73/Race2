@@ -93,14 +93,17 @@ export const FullArticleFragment = graphql`
       field_tags {
         name
         relationships {
-          backref_field_tags_node_article {
+          articles: backref_field_tags_node_article {
             ...ArticleFragment
           }
-          backref_field_tag_node_faq {
+          qa: backref_field_tag_node_faq {
             ...QAFragment
           }
-          backref_field_t_node_clip {
+          clips: backref_field_t_node_clip {
             ...PosterImageClipFragment
+          }
+          interviews: backref_field_tags_node_interview {
+            ...InterviewFragment
           }
         }
       }
@@ -213,14 +216,17 @@ export const FullInterviewFragment = graphql`
       field_tags {
         name
         relationships {
-          backref_field_tags_node_article {
+          articles: backref_field_tags_node_article {
             ...ArticleFragment
           }
-          backref_field_tag_node_faq {
+          qa: backref_field_tag_node_faq {
             ...QAFragment
           }
-          backref_field_t_node_clip {
+          clips: backref_field_t_node_clip {
             ...PosterImageClipFragment
+          }
+          interviews: backref_field_tags_node_interview {
+            ...InterviewFragment
           }
         }
       }
@@ -323,14 +329,17 @@ export const FullQAFragment = graphql`
       field_tags: field_tag {
         name
         relationships {
-          backref_field_tags_node_article {
+          articles: backref_field_tags_node_article {
             ...ArticleFragment
           }
-          backref_field_tag_node_faq {
+          qa: backref_field_tag_node_faq {
             ...QAFragment
           }
-          backref_field_t_node_clip {
+          clips: backref_field_t_node_clip {
             ...PosterImageClipFragment
+          }
+          interviews: backref_field_tags_node_interview {
+            ...InterviewFragment
           }
         }
       }
@@ -418,14 +427,17 @@ export const FullClipFragment = graphql`
       field_tags: field_t {
         name
         relationships {
-          backref_field_tags_node_article {
+          articles: backref_field_tags_node_article {
             ...ArticleFragment
           }
-          backref_field_tag_node_faq {
+          qa: backref_field_tag_node_faq {
             ...QAFragment
           }
-          backref_field_t_node_clip {
+          clips: backref_field_t_node_clip {
             ...PosterImageClipFragment
+          }
+          interviews: backref_field_tags_node_interview {
+            ...InterviewFragment
           }
         }
       }
@@ -534,6 +546,11 @@ export const LessonPlanFragment = graphql`
     }
     field_subjects {
       processed
+    }
+    relationships {
+      field_subject_tags {
+        name
+      }
     }
   }
 `

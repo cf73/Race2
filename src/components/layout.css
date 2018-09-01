@@ -18,10 +18,18 @@ body.modal-open {
   overflow: hidden;
 }
 
-strong {
-  font-weight: 700;
-  position: relative;
-  top:14px;
+.vimeo {
+  width: 100%;
+  height: 100%;
+}
+
+.vimeo-embed > iframe {
+  width: 100%;
+  height: 100%;
+}
+
+.vimeo-image {
+  background-image: none !important;
 }
 
 @import url('https://fonts.googleapis.com/css?family=Neuton:200,300,400,400i,700,800|Quicksand:300,400,500,700');

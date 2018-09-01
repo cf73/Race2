@@ -1,6 +1,6 @@
-const _ = require("lodash");
-const kebabCase = require("lodash/kebabCase");
-const path = require("path");
+const _ = require("lodash")
+const kebabCase = require("lodash/kebabCase")
+const path = require("path")
 
 const gradientColors = require('./src/gradients');
 
@@ -28,6 +28,7 @@ exports.createPages = ({ graphql, boundActionCreators }) => {
     const clipTemplate = path.resolve(`src/templates/clip.js`)
     const interviewTemplate = path.resolve(`src/templates/interview.js`)
     const qaTemplate = path.resolve(`src/templates/qa.js`)
+    const lessonTemplate = path.resolve(`src/templates/lesson.js`)
     
     // Query for markdown nodes to use in creating pages.
     graphql(
@@ -88,6 +89,7 @@ exports.createPages = ({ graphql, boundActionCreators }) => {
               }
             }
           }
+
           allNodeClip {
             edges {
               node {
@@ -96,6 +98,55 @@ exports.createPages = ({ graphql, boundActionCreators }) => {
               }
             }
           }
+
+          allNodeLessonPlan {
+            edges {
+              node {
+                id
+                title
+                field_activity{
+                  processed
+                }
+                field_overview {
+                  processed
+                }
+                field_subjects {
+                  processed
+                }
+                field_objectives {
+                  processed
+                }
+                field_copyright_a {
+                  processed
+                }
+                field_description {
+                  processed
+                }
+                field_lesson_plan {
+                  processed
+                }
+                field_grade_levels {
+                  processed
+                }
+                field_lesson_summary {
+                  processed
+                }
+                field_time_allotment {
+                  processed
+                }
+                field_lesson_plan_author {
+                  processed
+                }
+                field_less_plan_author_bio {
+                  processed
+                }
+                field_subjects {
+                  processed
+                }
+              }
+            }
+          }
+
         }
       `
     ).then(result => {
@@ -172,6 +223,16 @@ exports.createPages = ({ graphql, boundActionCreators }) => {
         createPage({
           path: `/clips/${kebabCase(edge.node.title)}`, // required
           component: clipTemplate,
+          context: {
+            id: edge.node.id,
+          },
+        })
+      })
+
+      _.each(result.data.allNodeLessonPlan.edges, edge => {
+        createPage({
+          path: `/lessons/${kebabCase(edge.node.title)}`, // required
+          component: lessonTemplate,
           context: {
             id: edge.node.id,
           },

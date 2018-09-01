@@ -88,18 +88,10 @@ export const OverlayBody = styled.div`
   position: relative;
 
   opacity: 1;
-  /*margin: 0 auto;
-  margin-top: 180px;
-  padding-bottom: 60px;*/
   display: flex;
   justify-content: center;
   flex-direction: column;
-
-  ${props => props.wide ? css`
-      width: 90%;
-  ` : css`
-      width: 66%;
-  `}
+  width: 100%;
 `
 
 export const OverlayHeader = styled.div`
