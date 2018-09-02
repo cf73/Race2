@@ -21,14 +21,52 @@ exports.onCreateBabelConfig = ({ actions }) => {
 exports.createPages = ({ graphql, boundActionCreators }) => {
   const { createPage, createRedirect } = boundActionCreators;
 
+  const themeTemplate = path.resolve(`src/templates/theme.js`)
+  const subThemeTemplate = path.resolve(`src/templates/subtheme.js`)
+  const articleTemplate = path.resolve(`src/templates/article.js`)
+  const clipTemplate = path.resolve(`src/templates/clip.js`)
+  const interviewTemplate = path.resolve(`src/templates/interview.js`)
+  const qaTemplate = path.resolve(`src/templates/qa.js`)
+  const lessonTemplate = path.resolve(`src/templates/lesson.js`)
+  const episodeTemplate = path.resolve(`src/templates/episode.js`)
+  const creditTemplate = path.resolve(`src/templates/credit.js`)
+  const transcriptTemplate = path.resolve(`src/templates/transcript.js`)
+
+  // custom pages for episodes
+  const episodes = ['one', 'two', 'three']
+
+  episodes.map( number => {
+    const index = episodes.indexOf(number) + 1
+    
+    createPage({
+      path: `/episodes/${kebabCase(number)}`, // required
+      component: episodeTemplate,
+      context: {
+        number,
+        index
+      }
+    })
+
+    createPage({
+      path: `/credits/${kebabCase(number)}`, // required
+      component: creditTemplate,
+      context: {
+        number,
+        index
+      }
+    })
+
+    createPage({
+      path: `/transcripts/${kebabCase(number)}`, // required
+      component: transcriptTemplate,
+      context: {
+        number,
+        index
+      }
+    })
+  })
+
   return new Promise((resolve, reject) => {
-    const themeTemplate = path.resolve(`src/templates/theme.js`)
-    const subThemeTemplate = path.resolve(`src/templates/subtheme.js`)
-    const articleTemplate = path.resolve(`src/templates/article.js`)
-    const clipTemplate = path.resolve(`src/templates/clip.js`)
-    const interviewTemplate = path.resolve(`src/templates/interview.js`)
-    const qaTemplate = path.resolve(`src/templates/qa.js`)
-    const lessonTemplate = path.resolve(`src/templates/lesson.js`)
     
     // Query for markdown nodes to use in creating pages.
     graphql(

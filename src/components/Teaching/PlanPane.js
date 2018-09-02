@@ -5,15 +5,27 @@ import get from 'lodash/get'
 
 import {
   SVGChevron,
-  FiledUnderLink
+  FiledUnderLink,
+  Overlay,
+  OverlayBody,
+  CloseButton,
+  TagTitle
 } from '../'
+
+import getCards from '../../utils/getCards'
 
 import {
   white,
+  black,
   red,
   softblack,
   teachingBlue
 } from '../../colors'
+
+import reorder from '../../utils/reorder'
+import shuffle from '../../utils/shuffle'
+
+const range = require('range')
 
 const PADDING = 138;
 const PADDING_TABLET = 80;
@@ -172,6 +184,7 @@ const Tags = styled(Column)`
 `
 
 const Tag = styled.div`
+  cursor: pointer;
   padding: 3px 15px;
 
   font-family: 'Quicksand';
@@ -289,16 +302,105 @@ const BottomRow = styled(Row)`
   }
 `
 
+const CardsContainer = styled.div`
+  display: flex;  
+  flex-direction: row; 
+  flex-wrap: wrap;
+
+  justify-content: flex-start;
+  padding-left: 50px;
+  padding-right: 50px;
+  padding-bottom: 70px;
+
+  @media (min-width: 1025px) { /* desktop */
+    justify-content: center;
+    padding-left: 0;
+    padding-right: 0;
+    padding-bottom: 200px;
+  }
+
+  @media (max-width: 812px) { /* mobile */
+    justify-content: center;
+    align-items: center;
+    padding-left: 0;
+    padding-right: 0;
+
+    min-width: 100vw;
+  }
+`
+
+const getTags = array => {
+  let results = []
+
+  results = array.map( ({name, relationships}) => {
+    return {
+      name,
+      cards: relationships
+    }
+  })
+
+  return results
+}
+
 class PlanPane extends React.Component {
   constructor(props) {
     super(props);
   
     this.state = {
+      tagName: null,
+      tagCards: [],
       open: false
     };
   }
 
+  renderOverlay = (name, cards) => {
+    const tagsContent = getCards(cards)
+    const order = shuffle(range.range(tagsContent.length))
+    const shuffledCards = reorder(tagsContent, order)
+
+    return (
+      <Overlay visible={name}>
+        <OverlayBody>
+          <Row style={{marginBottom: 120}}>
+            <Row style={{
+              position: 'fixed',
+              flex: 1,
+              zIndex: 5,
+              justifyContent: 'center',
+              top: 0, left: 0, right: 0
+            }}>
+              <TagTitle>{name}</TagTitle>
+            </Row>
+            <Row
+              style={{
+                position: 'fixed',
+                top: 0,
+                zIndex: 5,
+                right: 30
+              }}
+            >
+              <CloseButton
+                color={black}
+                simple={true} 
+                onClick={ () => this.setState({
+                  tagName: null,
+                  tagCards: []
+                })}
+              />
+            </Row>
+          </Row>
+          <CardsContainer>
+            { shuffledCards }
+          </CardsContainer>
+        </OverlayBody>
+      </Overlay>
+    )
+  }
+
+  ///
+
   render() {
+    const {tagName, tagCards} = this.state
     const {open} = this.state
     const title = get(this, 'props.data.title')
     const overview = get(this, 'props.data.field_overview.processed')
@@ -307,12 +409,32 @@ class PlanPane extends React.Component {
     const grade = get(this, 'props.data.field_grade_levels.processed')
 
     let subjects = get(this, 'props.data.relationships.field_subject_tags')
-    subjects = subjects ? subjects.map( ({name}) => name) : subjects
+    const tags = subjects ? getTags(subjects) : []
 
     const lessonLink = `/lessons/${kebabCase(title)}`
+
+    const renderTags = () => (
+      <Tags>
+        {
+          tags.map( ({name, cards}, key) => <Tag
+            key={key}
+            onClick={ () => this.setState({
+                tagName: name,
+                tagCards: cards
+              })
+            }
+          >
+            {name}
+          </Tag>)
+        }
+      </Tags>
+    )
     
     return (
       <Container>
+        {
+          this.renderOverlay(tagName, tagCards)
+        }
         <TopContainer
           open={open}
           onClick={() => this.setState({open: !open})}
@@ -332,13 +454,7 @@ class PlanPane extends React.Component {
             <SideColumn>
               <SideInnerColumn>
                 <SubTitle>subjects</SubTitle>
-                <Tags>
-                  {
-                    subjects && subjects.map( (name, key) => <Row key={key}>
-                      <Tag>{name}</Tag>
-                    </Row>)
-                  }
-                </Tags>
+                { subjects && renderTags() }
               </SideInnerColumn>
 
               <SideInnerColumn>

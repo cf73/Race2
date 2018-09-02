@@ -607,19 +607,33 @@ class Article extends React.Component {
     return (
       <Overlay visible={name}>
         <OverlayBody>
-          <Row>
-            <Row style={{flex: 1, justifyContent: 'center'}}>
+          <Row style={{marginBottom: 120}}>
+            <Row style={{
+              position: 'fixed',
+              flex: 1,
+              zIndex: 5,
+              justifyContent: 'center',
+              top: 0, left: 0, right: 0
+            }}>
               <TagTitle>{name}</TagTitle>
             </Row>
-            <CloseButton
-              style={{marginRight: 30}}
-              color={black}
-              simple={true} 
-              onClick={ () => this.setState({
-                tagName: null,
-                tagCards: []
-              })}
-            />
+            <Row
+              style={{
+                position: 'fixed',
+                zIndex: 5,
+                top: 0,
+                right: 30
+              }}
+            >
+              <CloseButton
+                color={black}
+                simple={true} 
+                onClick={ () => this.setState({
+                  tagName: null,
+                  tagCards: []
+                })}
+              />
+            </Row>
           </Row>
           <CardsContainer>
             { shuffledCards }

@@ -2,6 +2,7 @@ import { graphql } from 'gatsby'
 
 export const PosterImageClipFragment = graphql`
   fragment PosterImageClipFragment on node__clip {
+    id
     title
     field_external_video_url {
       uri
@@ -349,6 +350,7 @@ export const FullQAFragment = graphql`
 
 export const ClipFragment = graphql`
   fragment ClipFragment on node__clip {
+    id
     field_episode
     title
     field_external_video_url {
@@ -549,6 +551,89 @@ export const LessonPlanFragment = graphql`
     }
     relationships {
       field_subject_tags {
+        name
+        relationships {
+          articles: backref_field_tags_node_article {
+            ...ArticleFragment
+          }
+          qa: backref_field_tag_node_faq {
+            ...QAFragment
+          }
+          clips: backref_field_t_node_clip {
+            ...PosterImageClipFragment
+          }
+          interviews: backref_field_tags_node_interview {
+            ...InterviewFragment
+          }
+        }
+      }
+    }
+  }
+`
+
+export const EpisodeOneFragment = graphql`
+  fragment EpisodeOneFragment on taxonomy_term__episode_one_page {
+    id
+    title: field_episode_one_title {
+      processed
+    }
+    synopsis: field_episode_one_synopsis {
+      processed
+    }
+    credits: field_episode_one_credits {
+      processed
+    }
+    transcript: field_episode_one_transcript {
+      processed
+    }
+    relationships {
+      subthemes: field_explore_subthemes_related {
+        name
+      }
+    }
+  }
+`
+
+export const EpisodeTwoFragment = graphql`
+  fragment EpisodeTwoFragment on taxonomy_term__episode_two_page {
+    id
+    title: field_episode_two_ {
+      processed
+    }
+    synopsis: field_episode_two_synopsis {
+      processed
+    }
+    credits: field_episode_two_credits {
+      processed
+    }
+    transcript: field_episode_two_transcript {
+      processed
+    }
+    relationships {
+      subthemes: field_explore_subthemes_re2 {
+        name
+      }
+    }
+  }
+`
+
+export const EpisodeThreeFragment = graphql`
+  fragment EpisodeThreeFragment on taxonomy_term__episode_three_page {
+    id
+    title: field_episode_three_title {
+      processed
+    }
+    synopsis: field_episode_three_synopsis {
+      processed
+    }
+    credits: field_episode_three_credits {
+      processed
+    }
+    transcript: field_episode_three_ {
+      processed
+    }
+    relationships {
+      subthemes: field_explore_subthemes_re3 {
         name
       }
     }
