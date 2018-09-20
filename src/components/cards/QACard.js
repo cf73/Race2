@@ -1,6 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
-import kebabCase from 'lodash/kebabCase'
+import kebabCase from '../../utils/kebabCase'
 
 import Card from '../Card'
 import SVGArrow from '../SVGArrow'
@@ -8,7 +8,9 @@ import SVGArrow from '../SVGArrow'
 import {
   qaColor,
   red,
-  softblack
+  softblack,
+  fogwhite,
+  smokelime
 } from '../../colors'
 
 const Container = styled(Card)`
@@ -18,8 +20,10 @@ const Container = styled(Card)`
   flex-direction: column;
   justify-content: center;
 
-  background: linear-gradient(to bottom, ${qaColor[0]} 0%, ${qaColor[1]} 100%);
-  color: ${softblack};
+  background-color: ${softblack};
+  color: ${fogwhite};
+
+  box-shadow: 0px 0px 30px rgba(0, 0, 0, 0.17);
 
   padding-left: 15px;
   padding-right: 15px;
@@ -30,11 +34,12 @@ const Container = styled(Card)`
     top: -115px;
     right: 100px;
 
-    font-family: 'Quicksand'
-    font-weight: 700;
+    font-family: 'ff-tisa-web-pro';
+    font-weight: 400;
     font-size: 400px;
 
     opacity: 0.16;
+    display: none;
   }
 `
 
@@ -43,14 +48,18 @@ const Title = styled.div`
   font-weight: 500;
   font-size: 12px;
   line-height: 30px;
-  letter-spacing: 0.22em;
+  letter-spacing: 0.12em;
+  text-align: center;
+  color: ${smokelime};
 `
 
 const Question = styled.div`
-  font-family: 'Neuton';
+  font-family: 'Quicksand';
   font-weight: 500;
-  font-size: 36px;
-  line-height: 36px;
+  font-size: 24px;
+  line-height: 27px;
+  text-align: center;
+  padding: 15px;
 `
 
 const ArrowContainer = styled.div`

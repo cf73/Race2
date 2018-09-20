@@ -1,7 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
 
-import { black, red, white } from '../colors'
+import { black, white, luminous } from '../colors'
 import { DISPLAY_NAMES_TO_SLUG } from '../constants'
 
 const Container = styled.div`
@@ -16,9 +16,8 @@ const Container = styled.div`
 
   font-size: 12px;
   line-height: 24px;
-  letter-spacing: 0.22em;
+  letter-spacing: 0.12em;
   font-family: 'Quicksand';
-  font-weight: 500;
   color: ${props => props.color ? props.color : black};
   opacity: 0.8;
 
@@ -36,7 +35,7 @@ const Button = styled.div`
   margin-right: 15px;
   margin-bottom: 15px;
   
-  color: ${ props => props.selected ? red : white};
+  color: ${ props => props.selected ? luminous : white};
   text-transform: uppercase;
 `
 

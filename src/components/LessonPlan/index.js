@@ -28,6 +28,15 @@ const Column = styled.div`
   flex-direction: column;
 `
 
+const MainText = styled.div`
+  font-family: 'ff-tisa-web-pro';
+  font-weight: 300;
+  font-size: 17px;
+  line-height: 24px;
+  
+  color: ${softblack};
+ `
+
 const Container = styled.div`
   width: 100%;
   display: flex;
@@ -57,6 +66,17 @@ const MobileRow = styled.div`
   }
 `
 
+const Title = styled.div`
+  font-family: 'Quicksand';
+  font-weight: 500;
+  font-size: 36px;
+  line-height: 42px;
+
+  margin-bottom: 17px;
+
+  color: ${softblack};
+`
+
 const SubTitle = styled.div`
   font-family: Quicksand;
   font-weight: 500;
@@ -78,6 +98,10 @@ const SubTitle = styled.div`
 `
 
 class LessonPlan extends React.Component {
+  componentDidMount() {
+    setTimeout(()=>window.scrollTo(0,0),1)
+  }
+  
   render() {
     const {overlay} = this.props
     console.log(this.props)
@@ -96,13 +120,19 @@ class LessonPlan extends React.Component {
       <Container>
         <MobileRow>
           <Column style={{flex:3}}>
-            <Row>{title}</Row>
-            <Column dangerouslySetInnerHTML={{ __html: description }}/>
-            <Column dangerouslySetInnerHTML={{ __html: lessonPlan }}/>
+            <Row>
+            <Title>{title}</Title>
+            </Row>
+            <Column>
+              <MainText dangerouslySetInnerHTML={{ __html: description }}/>
+            </Column>
+            <Column>
+              <MainText dangerouslySetInnerHTML={{ __html: lessonPlan }}/>
+            </Column>
             <SubTitle>materials</SubTitle>
           </Column>
           <Column style={{flex:1, paddingLeft: 30}}>
-            <Row>{author}</Row>
+            <Row>Lesson Plan by {author}</Row>
             <Row>{authorBio}</Row>
             <Row>{authorCopyright}</Row>
           </Column>

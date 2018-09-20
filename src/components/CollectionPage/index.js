@@ -11,16 +11,21 @@ import getCards from '../../utils/getCards'
 
 import {
   white,
-  red,
+  fogwhite,
+  smokegrey,
   softblack,
+  gold,
+  smokeblue,
 } from '../../colors'
 
-const PADDING = 138;
+const PADDING = 60;
 const PADDING_TABLET = 80;
 const gradient = `linear-gradient(to bottom, #69D7DB 0%, #DBD8FF 100%)`
 
 const Container = styled.div`
   width: 100%;
+
+  background: ${smokegrey};
   
   display: flex;
   flex-direction: column;
@@ -37,27 +42,22 @@ const Container = styled.div`
 const Column = styled.div`
   display: flex;
   flex-direction: column;
+  
 `
 
 const TopContainer = styled.div`
   display: flex;
   flex-direction: column;
-
-  background: ${gradient};
-
-  min-height: 300px;
+  justify-content: center;
 
   padding: 20px;
-  padding-top: 160px;
   padding-left: ${PADDING_TABLET}px;
   padding-right: ${PADDING_TABLET}px;
 
   @media (min-width: 1025px) { /* desktop */
     flex-direction: row;
     padding-left: ${PADDING}px;
-    padding-right: 0;
 
-    min-height: 500px;
   }
 
   @media (max-width: 812px) { /* mobile */
@@ -66,12 +66,9 @@ const TopContainer = styled.div`
 `
 
 const BottomContainer = styled(Column)`
-  padding-left: ${PADDING_TABLET}px;
-  margin-top: -100px;
 
   @media (min-width: 1025px) { /* desktop */
-    padding-left: ${PADDING}px;
-    margin-top: -200px;
+
   }
 
   @media (max-width: 812px) { /* mobile */
@@ -81,27 +78,42 @@ const BottomContainer = styled(Column)`
 `
 
 const Title = styled.div`
-  font-family: 'Quicksand';
-  font-size: 48px;
-  line-height: 60px;
-
+display:none;
+  font-family: 'Neue Plak W01 Bold';
+  font-weight: 500;
+  font-size: 36px;
+  line-height: 42px;
+  max-width: 469px;
   margin-bottom: 17px;
-
-  color: ${white};
+  letter-spacing: 0.06em;
+  color: ${fogwhite};
+  text-transform: uppercase;
 `
 
 const Description = styled.div`
-  font-family: 'Neuton';
-  font-size: 24px;
-  line-height: 30px;
+  font-family: "ff-tisa-web-pro";
+  font-size: 17px;
+  line-height: 21px;
+  
+  max-width: 469px;
+  text-align: left;
+  color: ${fogwhite};
 
-  color: ${softblack};
+  & p {
+    margin: 0;
+  }
 `
 
 const ContentColumn = styled(Column)`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+
+  width: 306px;
+  padding: 30px;
+  text-align: center;
   
   @media (min-width: 1025px) { /* desktop */
-    flex: 1;
   }
 
   @media (max-width: 812px) { /* mobile */
@@ -153,7 +165,7 @@ const CardsContainer = styled(FlipMove)`
   flex-direction: row; 
   flex-wrap: wrap;
 
-  justify-content: flex-start;
+  justify-content: center;
   padding-left: 0;
   padding-right: 50px;
   padding-bottom: 70px;
@@ -176,6 +188,10 @@ const CardsContainer = styled(FlipMove)`
 
 class CollectionPage extends React.Component {
 
+  componentDidMount() {
+    setTimeout(()=>window.scrollTo(0,0),1)
+  }
+
   render() {
     const title = get(this, 'props.title')
     const description = get(this, 'props.description')
@@ -186,22 +202,23 @@ class CollectionPage extends React.Component {
     return (
       <Container>
         <TopContainer>
-          <ContentColumn>
-            <Title>{title}</Title>
-            <Description dangerouslySetInnerHTML={{ __html: description }}/>
-          </ContentColumn>
-          <SideBar>
+          
+          {/* <SideBar>
             <Title>&nbsp;</Title>
             <SubTitle>you might also like:</SubTitle>
             <FiledUnderLink color={white} arrowcolor={red}>About the Film</FiledUnderLink>
             <FiledUnderLink color={white} arrowcolor={red}>Explore Key Themes</FiledUnderLink>
-          </SideBar>
+          </SideBar> */}
         </TopContainer>
         <BottomContainer>
           {
             this.props.children
           }
           <CardsContainer>
+          <ContentColumn>
+            <Title>{title}</Title>
+            <Description dangerouslySetInnerHTML={{ __html: description }}/>
+          </ContentColumn>
             { relatedContent }
           </CardsContainer>
         </BottomContainer>

@@ -3,14 +3,21 @@ import styled from 'styled-components'
 import get from 'lodash/get'
 
 import {
+  SVGLogoMain,
+} from '../'
+
+import LogoMain from './LogoMain.png'
+
+import {
+  gold,
+  midnight,
   white
 } from '../../colors'
 
-const gradient = `linear-gradient(to bottom, rgba(255,255,255,0.66) 0%, rgba(245,238,182,0.92) 100%)`
-
 const Container = styled.div`
-  background-color: ${white};
-
+  background-color: ${midnight};
+  position: relative;
+  margin-top: -96px;
   @media (max-width: 812px) { /* mobile */
 
   }
@@ -19,8 +26,8 @@ const Container = styled.div`
 const TopContainer = styled.div`
   position: relative;
 
-  width: 100vw;
-  min-height: 100vh;
+  height: 100vh;
+ 
 
   &::before {
     position: absolute;
@@ -34,104 +41,68 @@ const TopContainer = styled.div`
     background-size: cover !important;
     background-attachment: fixed;
     background: ${ props => props.background ? `url(${props.background}) center no-repeat` : null };
+    opacity: .18;
 
-    filter: blur(9px);
-  }
-
-  &::after {
-    position: absolute;
-    content: '';
-
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-
-    background: ${gradient};
-
-    opacity: 0.79;
   }
 `
-
-const InnerContainer = styled.div`
-  position: absolute;
-
-  width: 100vw;
-  min-height: 100vh;
-
-  top: 0;
-  left: 0;
-  right: 0;
-`
-
-const Race = styled.div`
-  position: absolute;
-
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-
+const MainLogo = styled.div`
+  height: 100vh;
+  width: calc(100vw - 120px);
+  padding-left: 60px;
   display: flex;
-  flex-direction: row;
-
+  flex-direction: column;
   justify-content: center;
   align-items: center;
-
-  font-family: Lato;
-  font-size: 300px;
-  line-height: 84px;
-  font-weight: bold;
-
-  letter-spacing: 0.1em;
-
-  color: rgba(255,255,255,0.57);
-
-  text-transform: uppercase;
 `
 
-const Power = styled.div`
-  position: absolute;
-
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-
+const Slugline = styled.div`
+  width: 100%;
+  height: 60px;
+  letter-spacing: 0.03em;
+  font-family: 'Quicksand';
+  font-weight: 500;
+  font-size: 21px;
+  line-height: 24px;
+  color: ${white};
+  text-align: center;
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding-bottom: 15px;
 
-  justify-content: center;
-  align-items: center;
+  @media (max-width: 812px) { /* mobile */
+    padding-top: 2em;
+    font-size: 18px;
+  } 
+`
 
-  font-family: Lato;
-  font-size: 30px;
-  line-height: 36px;
-  font-weight: bold;
+const Image = styled.img`
+  width: 100%;
+  max-width: 1000px;
 
-  letter-spacing: 0.36em;
+  @media (min-width: 1025px) { /* desktop */
+    width: 90%;
+  }
 
-  text-transform: uppercase;
-
-  color: rgba(34,34,34,0.84);
+  @media (max-width: 812px) { /* mobile */
+    
+  } 
 `
 
 export default ({ data, location }) => {
   const background = get(data, `taxonomyTermThemes.relationships.field_theme_image.localFile.childImageSharp.original.src`)
 
-  // const cards = { interviews }
-
-  // const props = {
-  //   cards
-  // }
+  const episodeOneSynopsis = get(data, `allNodeSynopsis.edges.node[1].field_episode_synopsis.processed`)
 
   return (
     <Container>
-      <TopContainer background={background} />
-      <InnerContainer>
-        <Race>race</Race>
-        <Power>THE POWER OF AN ILLUSION</Power>
-      </InnerContainer>
+      <TopContainer background={background}>
+        <MainLogo>
+          <Image src={LogoMain} />
+          <Slugline>An online companion to the award-winning documentary series</Slugline>
+
+        </MainLogo>
+      </TopContainer>
     </Container>
   )
 }

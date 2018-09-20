@@ -51,7 +51,7 @@ class UnstyledOverlay extends React.Component {
 ///
 
 export const Overlay = styled(UnstyledOverlay)`
-  background-color: rgba(255,255,255,0.92);
+  background-color: rgba(161, 171, 183, 0.92);
   position: fixed;
   left: 0;
   top: 0;

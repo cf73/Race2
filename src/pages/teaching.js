@@ -19,11 +19,24 @@ const Container = styled.div`
   }
 `
 
-export default ({ data, location }) => <Layout location={location}>
-  <Container>
-    <Teaching data={data} />
-  </Container>
-</Layout>
+class TeachingContainer extends React.Component {
+  
+  componentDidMount() {
+    setTimeout(()=>window.scrollTo(0,0),1)
+  }
+
+  render() {
+    return (
+      <Layout location={this.props.location}>
+        <Container>
+          <Teaching data={this.props.data} />
+        </Container>
+      </Layout>
+    )
+  }
+}
+
+export default TeachingContainer
 
 export const query = graphql`
   query TeachingQuery {

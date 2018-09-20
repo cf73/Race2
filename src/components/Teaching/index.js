@@ -14,18 +14,20 @@ import getCards from '../../utils/getCards'
 import {
   white,
   red,
+  green,
   softblack,
 } from '../../colors'
 
 import PlanPane from './PlanPane'
 
-const PADDING = 138;
-const PADDING_TABLET = 80;
-const gradient = `linear-gradient(to bottom, #69D7DB 0%, #DBD8FF 100%)`
+const PADDING = 60;
+const PADDING_TABLET = 60;
 
 const Container = styled.div`
   width: 100%;
   
+  background: ${green};
+
   display: flex;
   flex-direction: column;
 
@@ -47,12 +49,9 @@ const TopContainer = styled.div`
   display: flex;
   flex-direction: column;
 
-  background: ${gradient};
-
-  min-height: 300px;
 
   padding: 20px;
-  padding-top: 160px;
+  padding-top: 30px;
   padding-left: ${PADDING_TABLET}px;
   padding-right: ${PADDING_TABLET}px;
 
@@ -61,7 +60,6 @@ const TopContainer = styled.div`
     padding-left: ${PADDING}px;
     padding-right: 0;
 
-    min-height: 500px;
   }
 
   @media (max-width: 812px) { /* mobile */
@@ -69,8 +67,17 @@ const TopContainer = styled.div`
   }
 `
 
+const HandoutsContainer = styled.div`
+  margin-bottom: 60px;
+`
+
+const ExternalLinksContainer = styled.div`
+  margin-bottom: 60px;
+`
+
 const BottomContainer = styled(Column)`
   padding-left: ${PADDING_TABLET}px;
+  margin-bottom: 15px;
 
   @media (min-width: 1025px) { /* desktop */
     padding-left: ${PADDING}px;
@@ -83,20 +90,26 @@ const BottomContainer = styled(Column)`
 
 const Title = styled.div`
   font-family: 'Quicksand';
-  font-size: 48px;
+  font-weight: 500;
+  font-size: 36px;
   line-height: 60px;
 
-  margin-bottom: 17px;
 
-  color: ${white};
+  color: ${softblack};
 `
 
 const Description = styled.div`
-  font-family: 'Neuton';
-  font-size: 24px;
-  line-height: 30px;
+  font-family: 'ff-tisa-web-pro';
+  font-size: 17px;
+  line-height: 24px;
+  max-width: 469px;
+  padding-bottom: 36px;
 
   color: ${softblack};
+
+  & p {
+    margin: 0;
+  }
 `
 
 const ContentColumn = styled(Column)`
@@ -151,17 +164,11 @@ const SubTitle = styled.div`
 
 const SecondTitle = styled.div`
   font-family: 'Quicksand';
-  font-size: 42px;
-  font-weight: 600;
+  font-size: 27px;
+  font-weight: 500;
   line-height: 36px;
 
   letter-spacing: 0.02em;
-
-  color: ${red};
-
-  
-  margin-top: 100px;
-  margin-bottom: 23px;
 
   @media (min-width: 1025px) { /* desktop */
     
@@ -173,7 +180,18 @@ const SecondTitle = styled.div`
 `
 
 const LessonsContainer = styled(Column)`
+  padding-left: ${PADDING_TABLET}px;
+  padding-right: ${PADDING_TABLET}px;
+  margin-bottom: 60px;
 
+  @media (min-width: 1025px) { /* desktop */
+    padding-left: ${PADDING}px;
+    padding-right: ${PADDING}px;
+  }
+
+  @media (max-width: 812px) { /* mobile */
+    
+  }
 `
 
 const CardsContainer = styled.div`
@@ -186,9 +204,10 @@ const CardsContainer = styled.div`
   padding-right: 50px;
   padding-bottom: 70px;
 
+  justify-content: center;
+
   @media (min-width: 1025px) { /* desktop */
     /*justify-content: center;*/
-    padding-left: 100px;
     padding-right: 0;
     padding-bottom: 200px;
   }
@@ -209,9 +228,8 @@ const LocalLink = styled(Link)`
 
   font-family: 'Quicksand';
   font-weight: 500;
-  font-size: 30px;
-  line-height: 42px;
-  letter-spacing: 0.02em;
+  font-size: 20px;
+  line-height: 45px;
 `
 
 ///
@@ -235,12 +253,12 @@ class Teaching extends React.Component {
             <Title>Teaching</Title>
             <Description dangerouslySetInnerHTML={{ __html: get(this, `props.data.taxonomyTermForTeachers.field_intro_text.processed`) }}/>
           </ContentColumn>
-          <SideBar>
+          {/* <SideBar>
             <Title>&nbsp;</Title>
             <SubTitle>you might also like:</SubTitle>
             <FiledUnderLink color={white} arrowcolor={red}>About the Film</FiledUnderLink>
             <FiledUnderLink color={white} arrowcolor={red}>Explore Key Themes</FiledUnderLink>
-          </SideBar>
+          </SideBar> */}
         </TopContainer>
         <Column>
           <BottomContainer>
@@ -253,26 +271,28 @@ class Teaching extends React.Component {
           </LessonsContainer>
 
           <BottomContainer>
-            <SecondTitle>Handouts</SecondTitle>
-            <Column>
-              {
-                handouts.map( ({title, link},key) => <LocalLink to={link} key={'handout'+key}>
-                  <SVGPDF style={{width: 25, marginRight: 20}}/>
-                  {title}
-                </LocalLink>)
-              }
-            </Column>
-
-            <SecondTitle>External Links</SecondTitle>
-            <Column>
-              {
-                links.map( ({title, uri},key) => <LocalLink to={uri} key={'link'+key}>
-                  <SVGLink style={{width: 25, marginRight: 20}}/>
-                  {title}
-                </LocalLink>)
-              }
-            </Column>
-
+            <HandoutsContainer>
+              <SecondTitle>Handouts</SecondTitle>
+              <Column>
+                {
+                  handouts.map( ({title, link},key) => <LocalLink to={link} key={'handout'+key}>
+                    <SVGPDF style={{width: 25, marginTop:6, marginRight: 20}}/>
+                    {title}
+                  </LocalLink>)
+                }
+              </Column>
+            </HandoutsContainer>
+            <ExternalLinksContainer>
+              <SecondTitle>External Links</SecondTitle>
+              <Column>
+                {
+                  links.map( ({title, uri},key) => <LocalLink to={uri} key={'link'+key}>
+                    <SVGLink style={{width: 25, marginTop:6, marginRight: 20}}/>
+                    {title}
+                  </LocalLink>)
+                }
+              </Column>
+            </ExternalLinksContainer>
             <SecondTitle>Additional resources</SecondTitle>
           </BottomContainer>
           <CardsContainer>

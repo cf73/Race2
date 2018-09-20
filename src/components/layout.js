@@ -7,13 +7,15 @@ import Typekit from 'react-typekit'
 import Header from '../components/Header'
 import Footer from '../components/Footer'
 
-import { backgroundColor } from '../colors'
+import { darkBackgroundColor } from '../colors'
 
 import './layout.css'
 
 const Container = styled.div`
-  background-color: ${backgroundColor};
+  background-color: ${darkBackgroundColor};
   margin: 0 auto;
+  padding-top: 96px;
+  // overflow: hidden;
 `
 
 export default ({ children, location, header = true }) => (
@@ -23,6 +25,16 @@ export default ({ children, location, header = true }) => (
         site {
           siteMetadata {
             title
+          }
+        }
+
+        footer: allTaxonomyTermFooter {
+          edges {
+            node {
+              field_legal_text {
+                processed
+              }
+            }
           }
         }
       }
@@ -39,7 +51,7 @@ export default ({ children, location, header = true }) => (
         <Typekit kitId="pte4pny" />
         { header && <Header data={data} pathname={location.pathname} /> }
         <Container> {children} </Container>
-        <Footer />
+        <Footer data={data.footer}/>
       </>
     )}
   />

@@ -22,6 +22,8 @@ import {
   backgroundColor,
   red,
   softblack,
+  smokelime,
+  smokegrey,
 } from '../../colors'
 
 import reorder from '../../utils/reorder'
@@ -31,12 +33,12 @@ const range = require('range')
 
 const TICKER = 'Q&A'
 export const gradient = `linear-gradient(to bottom, #EEFFE8 0%, rgba(255,255,255,0.92) 100%)`
-const gradient2 = `linear-gradient(to bottom, #EEFFE8 0%, #F6FFF4 100%)`
-const gradient3 = `linear-gradient(to bottom, #A7C6D9 0%, #546D67 100%)`
 
 const Container = styled.div`
   width: 100%;
   
+  background-color: ${smokelime};
+
   display: flex;
   flex-direction: column;
 
@@ -55,23 +57,23 @@ const TopContainer = styled.div`
   display: flex;
   flex-direction: column;
 
-  justify-content: center;
-  align-items: center;
-
   width: 100%;
   height: auto;
 
-  background: ${gradient};
 
   @media (min-width: 1025px) { /* desktop */
-    background-color: ${ props => props.overlay ? 'rgba(0,0,0,0)' : white };
-    background-image: ${ props => props.overlay ? 'none' : gradient };
+
   }
 
   @media (max-width: 812px) { /* mobile */
-    background-color: ${white};
     z-index: 1;
   }
+`
+const CenterContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  width:100%;
 `
 
 const BottomContaniner = styled.div`
@@ -81,11 +83,9 @@ const BottomContaniner = styled.div`
 
   z-index: 2;
 
-  background-color: ${white};
 
   @media (min-width: 1025px) { /* desktop */
-    background-color: ${ props => props.overlay ? 'rgba(0,0,0,0)' : white };
-    background-image: none;
+
   }
 
   @media (max-width: 812px) { /* mobile */
@@ -136,7 +136,7 @@ const Footer = styled(Row)`
   width: auto;
   min-height: 20vh;
 
-  background-image: ${props => props.overlay ? null : gradient3 };
+  background-color:${smokegrey};
 
   @media (min-width: 1025px) { /* desktop */
     display: flex;
@@ -226,6 +226,7 @@ const getFiledUnder = array => {
 const getTags = array => {
   let results = []
 
+  if(array)
   results = array.map( ({name, relationships}) => {
     return {
       name,
@@ -239,8 +240,10 @@ const getTags = array => {
 const getRelatedContent = array => {
   const cards = {
     articles: [],
+    interviews: [],
     clips: [],
     faqs: [],
+    qa: [],
   }
 
   array && array.forEach(item => {
@@ -263,17 +266,15 @@ const getRelatedContent = array => {
 }
 
 const AllEntitiesContainer = styled(Row)`
-  width: 100vw;
-  justify-content: flex-end;
+  justify-content: flex-start;
 
-  padding-top: 90px;
-  padding-right: 60px;
-  padding-bottom: 30px;
+  padding-top: 30px;
+  padding-left: 60px;
 
   z-index: 4;
 
   @media (min-width: 1025px) { /* desktop */
-    
+
   }
 
   @media (max-width: 812px) { /* mobile */
@@ -284,7 +285,7 @@ const AllEntitiesContainer = styled(Row)`
 
 const AllEntitiesText = `All ${TICKER}s`
 const AllEntities = () => <AllEntitiesContainer>
-  <FiledUnderLink color={backgroundColor}>{AllEntitiesText}</FiledUnderLink>
+  <FiledUnderLink color={smokegrey} to='/qa'>{AllEntitiesText}</FiledUnderLink>
 </AllEntitiesContainer>
 
 ///
@@ -312,15 +313,15 @@ const Tag = styled.div`
   padding-left: 10px;
   padding-right: 10px;
 
-  font-family: Lato;
-  font-size: 15px;
+  font-family: 'Quicksand';
+  font-weight: 500;
+  font-size: 14px;
   line-height: 36px;
-  letter-spacing: 0.22em;
-  font-weight: 600;
+  letter-spacing: 0.12em;
 
   text-transform: uppercase;
 
-  color: ${red};
+  color: ${softblack};
 
   margin-right: 15px;
   margin-bottom: 15px;
@@ -332,27 +333,22 @@ const Tag = styled.div`
 const TopCard = styled(Column)`
   position: relative;
 
-  width: 614px;
-  min-height: 300px;
+  width: 490px;
 
-  justify-content: center;
-
-  margin-top: 50px;
-  margin-bottom: 60px;
+  margin-top: 18px;
+  margin-bottom: 30px;
 
   margin-left: 30px;
   margin-right: 30px;
 
-  padding: 60px;
+  padding: 15px 30px 54px 30px;
 
-  border-radius: 3px;
-  box-shadow: 0px 3px 6px rgba(0,0,0,0.16);
+  border-radius: 15px;
 
-  background-image: ${gradient2};
-  color: ${softblack};
+  background-color: ${smokegrey};
+  color: ${smokelime};
 
   @media (min-width: 1025px) { /* desktop */
-    width: 614px;
   }
 
   @media (max-width: 812px) { /* mobile */
@@ -360,59 +356,60 @@ const TopCard = styled(Column)`
     margin-bottom: 0;
 
     padding: 0;
-    padding-top: 100px;
-    padding-left: 20px;
+    padding-top: 18px;
+    padding-left: 15px;
 
     width: 100vw;
     max-width: 100vw;
   }
-
-  &::before {
-    content: '?';
-    position: absolute;
-
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    width: 100%;
-
-    font-family: 'Tisa Pro';
-    font-size: 400px;
-    opacity: 0.06;
-  }
 `
-
+const Question = styled.div`
+  font-family: 'Quicksand';
+  font-weight: 500;
+  font-size: 14px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  text-align: center;
+  padding-bottom: 24px;
+`
 const Title = styled.div`
-  font-family: 'Tisa Pro';
-  font-size: 36px;
-  line-height: 42px;
-
-  margin-bottom: 10px;
+  font-family: 'Quicksand';
+  font-weight: 500;
+  font-size: 24px;
+  line-height: 27px;
+  padding-bottom: 12px;
 `
 
 const Description = styled.div`
-  font-family: 'Tisa Pro';
-  font-size: 20px;
-  line-height: 24px;
+  font-family: 'Quicksand';
+  font-weight: 400;
+  font-size: 17px;
+  line-height: 21px;
+  & p {
+    margin: 0;
+  }
+`
+const Answers = styled.div`
+  font-family: 'Quicksand';
+  font-weight: 500;
+  font-size: 14px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  text-align: center;
+  padding-bottom: 24px;
 `
 
-const MAX_WIDTH = 664
+const MAX_WIDTH = 527
 
 const Experts = styled(Column)`
   max-width: ${MAX_WIDTH}px;
   margin: auto;
-
+  margin-bottom: 90px;
   align-items: center;
 
   color: ${softblack};
 
   @media (min-width: 1025px) { /* desktop */
-    max-width: 664px;
   }
 
   @media (max-width: 812px) { /* mobile */
@@ -423,18 +420,24 @@ const Experts = styled(Column)`
 `
 
 const ExpertTitle = styled.div`
-  font-family: Lato;
-  font-size: 18px;
-  font-weight: 600;
-
-  line-height: 24px;
-  letter-spacing: 0.02em;
+  font-family: 'ff-tisa-web-pro';
+  font-size: 24px;
+  font-weight: 500;
+  text-align: center;
+  line-height: 27px;
+  padding-bottom: 12px;
 `
 
 const ExpertAnswer = styled.div`
-  font-family: 'Tisa Pro';
+  font-family: 'ff-tisa-web-pro';
+  font-weight: 300;
   font-size: 17px;
   line-height: 24px;
+  padding-bottom: 18px;
+  & p {
+    margin-top:0;
+    margin-bottom: 1em;
+  }
 `
 
 const MobileSideBarContainer = styled(Column)`
@@ -515,6 +518,10 @@ class QA extends React.Component {
     };
   }
 
+  componentDidMount() {
+    setTimeout(()=>window.scrollTo(0,0),1)
+  }
+
   renderOverlay = (name, cards) => {
     const tagsContent = getCards(cards)
     const order = shuffle(range.range(tagsContent.length))
@@ -523,19 +530,33 @@ class QA extends React.Component {
     return (
       <Overlay visible={name}>
         <OverlayBody>
-          <Row>
-            <Row style={{flex: 1, justifyContent: 'center'}}>
+          <Row style={{marginBottom: 120}}>
+            <Row style={{
+              position: 'fixed',
+              flex: 1,
+              zIndex: 5,
+              justifyContent: 'center',
+              top: 0, left: 0, right: 0
+            }}>
               <TagTitle>{name}</TagTitle>
             </Row>
-            <CloseButton
-              style={{marginRight: 30}}
-              color={black}
-              simple={true} 
-              onClick={ () => this.setState({
-                tagName: null,
-                tagCards: []
-              })}
-            />
+            <Row
+              style={{
+                position: 'fixed',
+                top: 0,
+                zIndex: 5,
+                right: 30
+              }}
+            >
+              <CloseButton
+                color={black}
+                simple={true} 
+                onClick={ () => this.setState({
+                  tagName: null,
+                  tagCards: []
+                })}
+              />
+            </Row>
           </Row>
           <CardsContainer>
             { shuffledCards }
@@ -626,20 +647,24 @@ class QA extends React.Component {
     return (
       <Container>
         {
-          this.renderOverlay(tagName, tagCards)
+          tagName && this.renderOverlay(tagName, tagCards)
         }
         <TopContainer overlay={overlay}>
           { !overlay && <AllEntities /> }
-          <InnerTopContainer>
-            { left && <Chevron to={left} left={true}/>}
-            <TopCard>
-              <Title>{title}</Title>
-              <Description dangerouslySetInnerHTML={{ __html: description }}/>
-            </TopCard>
-            { right && <Chevron to={right}/>}
-          </InnerTopContainer>
+          <CenterContainer>
+            <InnerTopContainer>
+              { left && <Chevron to={left} left={true}/>}
+              <TopCard>
+                <Question>Question:</Question>
+                <Title>{title}</Title>
+                <Description dangerouslySetInnerHTML={{ __html: description }}/>
+              </TopCard>
+              { right && <Chevron to={right}/>}
+            </InnerTopContainer>
+          </CenterContainer>
         </TopContainer>
         <BottomContaniner overlay={overlay}>
+          <Answers>Answers:</Answers>
           <Experts>
           {
             answers.map( ({answer, expert}, key) => <Row key={key}>

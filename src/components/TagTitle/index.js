@@ -7,8 +7,9 @@ import {
 const TagTitle = styled.div`
   font-family: Quicksand;
   font-style: normal;
-  font-weight: normal;
+  font-weight: 500;
   line-height: 28px;
+  text-transform: uppercase;
   font-size: 24px;
   text-align: center;
   letter-spacing: 0.12em;
