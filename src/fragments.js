@@ -2,6 +2,7 @@ import { graphql } from 'gatsby'
 
 export const PosterImageClipFragment = graphql`
   fragment PosterImageClipFragment on node__clip {
+    id
     title
     field_external_video_url {
       uri
@@ -14,13 +15,19 @@ export const PosterImageClipFragment = graphql`
         }
       }
     }
+    path{
+      alias
+    }
   }
 `;
 
 export const ArticleFragment = graphql`
   fragment ArticleFragment on node__article {
     title
-    field_include_in_the_teaching_se
+    field_weight
+    field_resource_weight
+    field_is_additional_resource
+    field_is_popular_resource
     field_short_version {
       processed
     }
@@ -37,6 +44,9 @@ export const ArticleFragment = graphql`
         }
       }
     }
+    path{
+      alias
+    }
   }
 `;
 
@@ -44,7 +54,10 @@ export const FullArticleFragment = graphql`
   fragment FullArticleFragment on node__article {
     __typename
     id
-    field_include_in_the_teaching_se
+    field_weight
+    field_resource_weight
+    field_is_additional_resource
+    field_is_popular_resource
     field_short_version {
       processed
     }
@@ -68,10 +81,16 @@ export const FullArticleFragment = graphql`
       field_belongs_to_subtheme {
         id
         name
+        path {
+          alias
+        }
         relationships {
           field_belongs_to_theme {
             id
             name
+            path {
+              alias
+            }
           }
         }
       }
@@ -85,6 +104,9 @@ export const FullArticleFragment = graphql`
         }
         ... on node__article {
           ...ArticleFragment
+        }
+        ... on node__interview {
+          ...InterviewFragment
         }
         ... on node__quickfact {
           ...QuickfactWithRelatedContentFragment
@@ -149,6 +171,12 @@ export const FullArticleFragment = graphql`
           }
         }
       }
+      field_expert_reference{
+        __typename
+        ... on node__expert {
+          ...ExpertFragment
+        }        
+      }
     }
     field_large_callout_text {
       processed
@@ -156,13 +184,119 @@ export const FullArticleFragment = graphql`
     field_full_version {
       processed
     }
+    path{
+      alias
+    }
   }
 `;
+
+export const ExternalResourceFragment = graphql`
+fragment ExternalResourceFragment on node__external_resource {
+  title
+  field_weight
+  field_resource_weight
+  changed
+  field_is_popular_resource
+  field_overview {
+    processed
+  }
+  field_link {
+    uri
+    title
+  }
+  relationships {
+    field_main_image {
+      localFile {
+        publicURL
+      }
+    }
+  }
+  path{
+    alias
+  }
+}
+`
+
+export const FullExternalResourceFragment = graphql`
+fragment FullExternalResourceFragment on node__external_resource {
+  title
+  field_weight
+  field_resource_weight
+  changed
+  field_is_popular_resource
+  field_overview {
+    processed
+  }
+  field_link {
+    uri
+    title
+  }
+  relationships {
+    field_main_image {
+      localFile {
+        publicURL
+      }
+    }
+  }
+}
+`
+
+
+export const ExpertFragment = graphql`
+  fragment ExpertFragment on node__expert {
+    title
+    changed
+    field_overview {
+      processed
+    }
+    field_title {
+      processed
+    }
+    relationships {
+      field_main_image {
+        localFile {
+          publicURL
+        }
+      }
+    }
+    path{
+      alias
+    }
+  }
+`
+
+export const FullExpertFragment = graphql`
+  fragment FullExpertFragment on node__expert {
+    __typename
+    title
+    changed
+    field_overview {
+      processed
+    }
+    field_title {
+      processed
+    }
+    relationships {
+      field_main_image {
+        localFile {
+          publicURL
+        }
+      }
+    }
+    path{
+      alias
+    }
+  }
+`
 
 export const InterviewFragment = graphql`
   fragment InterviewFragment on node__interview {
     title
+    field_weight
+    field_resource_weight
     changed
+    field_is_additional_resource
+    field_is_popular_resource
     field_interviewee_bio {
       processed
     }
@@ -179,6 +313,9 @@ export const InterviewFragment = graphql`
         }
       }
     }
+    path{
+      alias
+    }
   }
 `
 
@@ -186,7 +323,11 @@ export const FullInterviewFragment = graphql`
   fragment FullInterviewFragment on node__interview {
     __typename
     title
+    field_weight
+    field_resource_weight
     changed
+    field_is_additional_resource
+    field_is_popular_resource
     field_interviewee_name {
       processed
     }
@@ -203,13 +344,34 @@ export const FullInterviewFragment = graphql`
       processed
     }
     relationships {
+      related_content: field_related_content_interview {
+        __typename
+        ... on node__faq {
+          ...QAFragment
+        }
+        ... on node__clip {
+          ...PosterImageClipFragment
+        }
+        ... on node__article {
+          ...ArticleFragment
+        }
+        ... on node__interview {
+          ...InterviewFragment
+        }
+      }
       field_which_subtheme_does_this_b {
         id
         name
+        path {
+          alias
+        }
         relationships {
           field_belongs_to_theme {
             id
             name
+            path {
+              alias
+            }
           }
         }
       }
@@ -251,6 +413,15 @@ export const FullInterviewFragment = graphql`
           }
         }
       }
+      field_expert_reference{
+        __typename
+        ... on node__expert {
+          ...ExpertFragment
+        }        
+      }
+    }
+    path{
+      alias
     }
   }
 `
@@ -258,12 +429,17 @@ export const FullInterviewFragment = graphql`
 export const QAFragment = graphql`
   fragment QAFragment on node__faq {
     title
+    field_belong_to_episode
+    field_question_number
     field_expert_1 {
       value
       format
       processed
     }
     changed
+    path{
+      alias
+    }
   }
 `
 
@@ -276,6 +452,7 @@ export const FullQAFragment = graphql`
       slug
     }
     field_belong_to_episode
+    field_question_number
     field_title {
       processed
     }
@@ -285,16 +462,10 @@ export const FullQAFragment = graphql`
     field_expert_1 {
       processed
     }
+    field_expert_2_answer {
+      processed
+    }
     field_expert_1_answer {
-      processed
-    }
-    field_expert_2 {
-      processed
-    }
-    field_expert_3_name {
-      processed
-    }
-    field_expert_4_name {
       processed
     }
     field_expert_4_answer {
@@ -304,10 +475,16 @@ export const FullQAFragment = graphql`
       field_belongs_to_subtheme {
         id
         name
+        path {
+          alias
+        }
         relationships {
           field_belongs_to_theme {
             id
             name
+            path {
+              alias
+            }
           }
         }
       }
@@ -343,16 +520,49 @@ export const FullQAFragment = graphql`
           }
         }
       }
+      field_expert_1_reference {
+        __typename
+        ... on node__expert {
+          ...ExpertFragment
+        }
+      }
+      field_expert_2_reference {
+        __typename
+        ... on node__expert {
+          ...ExpertFragment
+        }
+      }
+      field_expert_3_reference {
+        __typename
+        ... on node__expert {
+          ...ExpertFragment
+        }
+      }
+      field_expert_4_reference {
+        __typename
+        ... on node__expert {
+          ...ExpertFragment
+        }
+      }
+    }
+    path{
+      alias
     }
   }
 `
 
 export const ClipFragment = graphql`
   fragment ClipFragment on node__clip {
+    id
+    field_weight
     field_episode
     title
+    field_is_expert_connection
     field_external_video_url {
       uri
+    }
+    field_overview {
+      processed
     }
     field_title_of_clip {
       processed
@@ -376,6 +586,9 @@ export const ClipFragment = graphql`
         }
       }
     }
+    path{
+      alias
+    }
   }
 `
 
@@ -383,11 +596,16 @@ export const FullClipFragment = graphql`
   fragment FullClipFragment on node__clip {
     __typename
     id
+    field_weight
     field_episode
     title
+    field_is_expert_connection
     field_external_video_url {
       uri
       title
+    }
+    field_overview {
+      processed
     }
     field_title_of_clip {
       processed
@@ -417,10 +635,16 @@ export const FullClipFragment = graphql`
       field_belongs_to_subtheme {
         id
         name
+        path {
+          alias
+        }
         relationships {
           field_belongs_to_theme {
             id
             name
+            path {
+              alias
+            }
           }
         }
       }
@@ -475,6 +699,9 @@ export const FullClipFragment = graphql`
         }
       }
     }
+    path{
+      alias
+    }
   }
 `
 
@@ -507,7 +734,11 @@ export const QuickfactWithRelatedContentFragment = graphql`
 export const LessonPlanFragment = graphql`
   fragment LessonPlanFragment on node__lesson_plan {
     id
+    field_weight
+    field_resource_weight
     title
+    field_is_popular_resource
+    field_episode
     field_activity{
       processed
     }
@@ -547,10 +778,170 @@ export const LessonPlanFragment = graphql`
     field_subjects {
       processed
     }
+    field_mat {
+      processed
+    }
+    field_relevant_standards {
+      processed
+    }
+    field_assessment {
+      processed
+    }
+    field_additional_resources {
+      processed
+    }
     relationships {
       field_subject_tags {
         name
+        relationships {
+          articles: backref_field_tags_node_article {
+            ...ArticleFragment
+          }
+          qa: backref_field_tag_node_faq {
+            ...QAFragment
+          }
+          clips: backref_field_t_node_clip {
+            ...PosterImageClipFragment
+          }
+          interviews: backref_field_tags_node_interview {
+            ...InterviewFragment
+          }
+        }
       }
+      field_main_image {
+        localFile {
+          publicURL
+        }
+      }
+    }
+    path{
+      alias
+    }
+  }
+`
+
+export const EpisodeOneFragment = graphql`
+  fragment EpisodeOneFragment on taxonomy_term__episode_one_page {
+    id
+    title: field_episode_one_title {
+      processed
+    }
+    synopsis: field_episode_one_synopsis {
+      processed
+    }
+    credits: field_episode_one_credits {
+      processed
+    }
+    transcript: field_episode_one_transcript {
+      processed
+    }
+    relationships {
+      subthemes: field_explore_subthemes_related {
+        name
+        path{
+          alias
+        }
+      }
+    }
+  }
+`
+
+export const EpisodeTwoFragment = graphql`
+  fragment EpisodeTwoFragment on taxonomy_term__episode_two_page {
+    id
+    title: field_episode_two_ {
+      processed
+    }
+    synopsis: field_episode_two_synopsis {
+      processed
+    }
+    credits: field_episode_two_credits {
+      processed
+    }
+    transcript: field_episode_two_transcript {
+      processed
+    }
+    relationships {
+      subthemes: field_explore_subthemes_re2 {
+        name
+        path{
+          alias
+        }
+      }
+    }
+  }
+`
+
+export const EpisodeThreeFragment = graphql`
+  fragment EpisodeThreeFragment on taxonomy_term__episode_three_page {
+    id
+    title: field_episode_three_title {
+      processed
+    }
+    synopsis: field_episode_three_synopsis {
+      processed
+    }
+    credits: field_episode_three_credits {
+      processed
+    }
+    transcript: field_episode_three_ {
+      processed
+    }
+    relationships {
+      subthemes: field_explore_subthemes_re3 {
+        name
+        path{
+          alias
+        }
+      }
+    }
+  }
+`
+
+export const AdditionalResourceFragment = graphql`
+  fragment AdditionalResourceFragment on node__additional_resource {
+    id
+    field_resource_weight
+    title
+    field_link {
+      uri
+      title
+    }
+    relationships {
+      field_main_image {
+        localFile {
+          publicURL
+        }
+      }
+    }
+    path{
+      alias
+    }
+  }
+`
+
+export const HandoutFragment = graphql`
+  fragment HandoutFragment on node__handout {
+    id
+    field_resource_weight
+    title
+    field_show_in_resources
+    field_link {
+      uri
+      title
+    }
+    field_hand{
+      processed
+    }
+    relationships {
+      field_main_image {
+        localFile {
+          publicURL
+        }
+      }
+    }
+    path{
+      alias
     }
   }
 `

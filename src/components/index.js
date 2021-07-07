@@ -15,6 +15,7 @@ export {
 } from './overlay'
 
 export SVGLogo from './SVGLogo'
+export SVGLogoMain from './SVGLogoMain'
 export SVGChevron from './SVGChevron'
 export SVGArrow from './SVGArrow'
 export SVGLink from './SVGLink'
@@ -28,6 +29,10 @@ export Interview from './Interview'
 export QA from './QA'
 export Clip from './Clip'
 export LessonPlan from './LessonPlan'
+export Episode from './Episode'
+export Credits from './Credits'
+export Transcript from './Transcript'
+export Expert from './Expert'
 
 export Teaching from './Teaching'
 export CollectionPage from './CollectionPage'

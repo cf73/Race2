@@ -2,6 +2,7 @@ import React from 'react'
 import styled, { css } from 'styled-components'
 import kebabCase from 'lodash/kebabCase'
 import get from 'lodash/get'
+import { Link } from 'gatsby'
 
 import {
   FiledUnderLink,
@@ -18,8 +19,9 @@ import {
   white,
   darkWhite,
   whiteShadowTrans,
-  red,
+  rose,
   softblack,
+  articles,
 } from '../../colors'
 
 import reorder from '../../utils/reorder'
@@ -28,13 +30,14 @@ import shuffle from '../../utils/shuffle'
 const range = require('range')
 
 const TICKER = 'ARTICLE'
-const gradient = `linear-gradient(to bottom, #D9B0B0 0%, rgba(109,88,88,0.92) 100%)`
 const gradient2 = `linear-gradient(to bottom, #2A495C 0%, rgba(29,69,59,0.92) 100%)`
 
 const Container = styled.div`
   width: 100%;
   display: flex;
   flex-direction: column;
+
+  background-color: ${articles};
 
   @media (min-width: 1025px) { /* desktop */
 
@@ -51,21 +54,15 @@ const TopContainer = styled.div`
   display: flex;
   flex-direction: column;
 
-  justify-content: center;
-  align-items: center;
-
   width: 100%;
   height: auto;
 
-  background: ${gradient};
 
   @media (min-width: 1025px) { /* desktop */
-    background-color: ${ props => props.overlay ? 'rgba(0,0,0,0)' : white };
-    background-image: none;
+
   }
 
   @media (max-width: 812px) { /* mobile */
-    background-color: ${white};
     z-index: 1;
   }
 `
@@ -94,70 +91,42 @@ const BottomContaniner = styled.div`
 `
 
 const MainImage = styled.div`
-  position: fixed;
-  top: 222px;
-  left: 60px;
-  right: 60px;
-
   width: auto;
-  height: 40vh;
-
-  z-index: 2;
-
-  display: flex;
-  flex-direction: column;
-
-  justify-content: center;
-  align-items: center;
+  height: 456px;
+  margin-top: -30px;
+  margin-left: -7vw;
+  margin-right: -7vw;
+  margin-bottom: 15px;
+  border-bottom: solid 1px #ececec;
 
   background-size: cover !important;
   background-attachment: fixed;
   background: ${ props => props.background ? `url(${props.background}) center no-repeat` : null };
-  box-shadow: 0px 3px 6px rgba(0,0,0,0.16);
-  transition: all .5s ease;
 
   @media (min-width: 1025px) { /* desktop */
-    ${props => props.overlay ? css`
-      top: 10vh;
-      left: 20vw;
-      right: 20vw;
-      height: 50vh;
-    ` : css`
-      top: 0;
-      left: 0;
-      right: 0;
-      
-      height: 100vh;
-
-      box-shadow: none;
-    `}
+    
+    
   }
 
   @media (max-width: 812px) { /* mobile */
-    top: 0;
-    left: 0;
-    right: 0;
-    width: 100vw;
-    height: 40vh;
-    min-height: 300px;
+  
   }
 `
 
 const TextContainer = styled.div`
   z-index: 3;
 
-  width: 80%;
-  padding-top: 40vh;
+  padding: 42px 30px;
 
   @media (min-width: 1025px) { /* desktop */
     min-width: 1000px;
     max-width: 1200px;
-    padding-top: ${props => props.overlay ? '40vh' : '87vh'};
   }
 
   @media (max-width: 812px) { /* mobile */
-    width: 100vw;
-    margin-top: 20vh;
+    //width: 100vw;
+    max-width:100%;
+    padding:42px 0px;
   }
 `
 
@@ -214,35 +183,31 @@ const Column = styled.div`
 `
 
 const Filing = styled.div`
-  margin-left: -60px;
-  margin-top: -30px;
-  margin-bottom: 30px;
+padding-bottom: 15px;
 `
 
 const Title = styled.div`
-  font-family: 'Neuton';
-  font-weight:400;
-  font-size: 48px;
+  font-family: 'ff-tisa-web-pro';
+  font-size: 42px;
   line-height: 48px;
-  margin-top:48px;
 `
 
 const Author = styled.div`
   font-family: 'Quicksand';
-  font-weight:500;
+  font-weight: 500;
   font-size: 12px;
   line-height: 18px;
-  letter-spacing: 0.22em;
+  letter-spacing: 0.12em;
 
   text-transform: uppercase;
 
   padding-top: 18px;
-  padding-bottom: 6px;
+  padding-bottom: 15px;
 `
 
 const IntroText = styled.div`
-  font-family: 'Neuton';
-  font-weight:700;
+  font-family: 'ff-tisa-web-pro';
+  font-weight: 500;
   font-size: 24px;
   line-height: 30px;
   & p {
@@ -252,24 +217,20 @@ const IntroText = styled.div`
 `
 
 const Text = styled.div`
-  font-family: 'Neuton';
-  font-size: 20px;
-  line-height: 28px;
+  font-family: 'ff-tisa-web-pro';
+  font-size: 17px;
+  line-height: 24px;
 `
 
 const ContentBar = styled(Column)`
   flex: 1;
-  padding: 60px 90px;
+  padding: 30px 7vw;
+
+  margin-top: -30px;
 
   z-index: 10;
 
   background-color: ${white};
-  background-color: rgba(255, 255, 255, 0.97);
-
-
-  border-bottom-left-radius: 3px;
-
-  box-shadow: 0px 3px 3px rgba(0,0,0,0.16);
 
   @media (min-width: 1025px) { /* desktop */
     
@@ -281,35 +242,28 @@ const ContentBar = styled(Column)`
 `
 
 const SideBar = styled(Column)`
-  position: relative;
+position: relative;
 
-  display: none !important;
+display: none !important;
 
-  display: flex;
-  flex-direction: column;
+padding-left:30px;
 
-  width: 400px;
-  background-color: ${whiteShadowTrans};
+display: flex;
+flex-direction: column;
 
+width: 336px;
 
+@media (min-width: 1025px) { /* desktop */
+  display: flex !important;
+}
 
-  border-top-right-radius: 3px;
-  border-bottom-right-radius: 3px;
-
-  box-shadow: 0px 3px 3px rgba(0,0,0,0.16);
-
-  @media (min-width: 1025px) { /* desktop */
-    display: flex !important;
-  }
-
-  @media (max-width: 812px) { /* mobile */
-    display: none;
-  }
+@media (max-width: 812px) { /* mobile */
+  display: none;
+}
 `
 
 const AuthorImage = styled.div`
-  height: 481px;
-  min-width: 373px;
+  height: 348px;
 
   border-top-right-radius: 3px;
 
@@ -325,11 +279,11 @@ const AuthorImage = styled.div`
 `
 
 const Bio = styled.div`
-  padding: 15px;
-  font-family: Neuton;
+  padding-top: 15px;
+  font-family: "ff-tisa-web-pro";
   font-weight: 400;
-  font-size: 18px;
-  line-height: 21px;
+  font-size: 17px;
+  line-height: 24px;
   & p {
     margin: 0;
   }
@@ -347,7 +301,6 @@ const SubTitle = styled.div`
   padding-left: 0;
 
   @media (min-width: 1025px) { /* desktop */
-    padding-left: 15px;
   }
 
   @media (max-width: 812px) { /* mobile */
@@ -367,7 +320,6 @@ const Tags = styled.div`
   overflow: auto;
 
   @media (min-width: 1025px) { /* desktop */
-    padding-left: 15px;
   }
 
   @media (max-width: 812px) { /* mobile */
@@ -377,23 +329,29 @@ const Tags = styled.div`
 
 const Tag = styled.div`
   cursor: pointer;
-  padding: 3px 15px;
+  padding-left: 10px;
+  padding-right: 10px;
 
-  font-family: Quicksand;
-  font-weight: 500;
+  font-family: 'Quicksand';
   font-size: 14px;
   line-height: 36px;
-  letter-spacing: 0.22em;
+  letter-spacing: 0.12em;
+  font-weight: 500;
 
   text-transform: uppercase;
 
-  color: ${red};
 
   margin-right: 15px;
-  margin-top: 15px;
+  margin-bottom: 15px;
 
   border-radius: 3px;
   background-color: ${white};
+  transition: all .5s;
+
+  & :hover {
+    background-color: ${rose};
+    transition: all .5s;
+  }
 `
 
 const BackTo = styled.div`
@@ -426,6 +384,7 @@ const CardsContainer = styled.div`
     justify-content: center;
     padding-left: 0;
     padding-right: 0;
+    margin-left: -15px;
     padding-bottom: 200px;
   }
 
@@ -509,10 +468,11 @@ const MobileColumn = styled(Column)`
 const getFiledUnder = array => {
   let results = []
 
-  array.map( ({name}) =>
+  array.map( ({name, path}) =>
     results.push({
       name,
-      link: `/subthemes/${kebabCase(name)}`
+      link: path.alias
+      //link: `/subthemes/${kebabCase(name)}`
     })
   )
 
@@ -522,6 +482,7 @@ const getFiledUnder = array => {
 const getTags = array => {
   let results = []
 
+  if(array)
   results = array.map( ({name, relationships}) => {
     return {
       name,
@@ -535,9 +496,10 @@ const getTags = array => {
 const getRelatedContent = array => {
   const cards = {
     articles: [],
+    interviews: [],
     clips: [],
     faqs: [],
-    interviews: [],
+    qa: [],
   }
 
   array && array.forEach(item => {
@@ -563,16 +525,15 @@ const getRelatedContent = array => {
 }
 
 const AllEntitiesContainer = styled(Row)`
-  width: 100vw;
-  justify-content: flex-end;
+  justify-content: flex-start;
 
-  padding-top: 90px;
-  padding-right: 60px;
+  padding-top: 30px;
+  padding-left: 60px;
 
   z-index: 4;
 
   @media (min-width: 1025px) { /* desktop */
-    display: none;
+
   }
 
   @media (max-width: 812px) { /* mobile */
@@ -583,7 +544,7 @@ const AllEntitiesContainer = styled(Row)`
 
 const AllEntitiesText = `All ${TICKER.toLowerCase()}s`
 const AllEntities = () => <AllEntitiesContainer>
-  <FiledUnderLink color={white}>{AllEntitiesText}</FiledUnderLink>
+  <FiledUnderLink color={softblack} to='/articles' direction={'left'}>{AllEntitiesText}</FiledUnderLink>
 </AllEntitiesContainer>
 
 ///
@@ -599,6 +560,10 @@ class Article extends React.Component {
     };
   }
 
+  componentDidMount() {
+    setTimeout(()=>window.scrollTo(0,0),1)
+  }
+
   renderOverlay = (name, cards) => {
     const tagsContent = getCards(cards)
     const order = shuffle(range.range(tagsContent.length))
@@ -607,19 +572,33 @@ class Article extends React.Component {
     return (
       <Overlay visible={name}>
         <OverlayBody>
-          <Row>
-            <Row style={{flex: 1, justifyContent: 'center'}}>
+          <Row style={{marginBottom: 120}}>
+            <Row style={{
+              position: 'fixed',
+              flex: 1,
+              zIndex: 5,
+              justifyContent: 'center',
+              top: 0, left: 0, right: 0
+            }}>
               <TagTitle>{name}</TagTitle>
             </Row>
-            <CloseButton
-              style={{marginRight: 30}}
-              color={black}
-              simple={true} 
-              onClick={ () => this.setState({
-                tagName: null,
-                tagCards: []
-              })}
-            />
+            <Row
+              style={{
+                position: 'fixed',
+                zIndex: 5,
+                top: 0,
+                right: 30
+              }}
+            >
+              <CloseButton
+                color={black}
+                simple={true} 
+                onClick={ () => this.setState({
+                  tagName: null,
+                  tagCards: []
+                })}
+              />
+            </Row>
           </Row>
           <CardsContainer>
             { shuffledCards }
@@ -651,6 +630,9 @@ class Article extends React.Component {
 
     const relatedContent = getRelatedContent(get(this, `props.data.${nodeName}.relationships.field_article_related_content`))
     
+    const expertName = get(this, `props.data.${nodeName}.relationships.field_expert_reference.title`)  
+    const expertLink = get(this, `props.data.${nodeName}.relationships.field_expert_reference.path.alias`)  
+
     const LocalBackTo = () => (
       <BackTo>
         <SubTitle>back to:</SubTitle>
@@ -679,10 +661,23 @@ class Article extends React.Component {
 
     const DesktopSideBar = () => (
       <SideBar>
-        <AuthorImage background={authorImage}/>
+        {expertName ?
+          <Link style={{color:'inherit', textDecoration:'none'}} to={expertLink}>
+            <AuthorImage background={authorImage}/>
+          </Link>
+          :
+          <AuthorImage background={authorImage}/>
+        }
+
+
         <Bio dangerouslySetInnerHTML={{ __html: authorBio }}/>
         
         <SubTitle style={{marginTop: 90}}>explore:</SubTitle>
+        <Filing>
+          {
+            filedUnder.map( ({name, link}, key) => <FiledUnderLink key={key} to={link}>{name}</FiledUnderLink>)
+          }
+        </Filing>
         { renderTags() }
         <SubTitle style={{marginTop: 90}}>see also:</SubTitle>
 
@@ -738,16 +733,10 @@ class Article extends React.Component {
         }
         <TopContainer overlay={overlay}>
           <AllEntities />
-          <MainImage background={background} overlay={overlay}/>
           <TextContainer overlay={overlay}>
             <TextInnerContainer>
               <ContentBar>
-                <Filing>
-                <SubTitle>filed under:</SubTitle>
-                  {
-                    filedUnder.map( ({name, link}, key) => <FiledUnderLink key={key} to={link}>{name}</FiledUnderLink>)
-                  }
-                  </Filing>
+                <MainImage background={background} overlay={overlay}/>
                 <Title>{title}</Title>
                 <Author>by {author}</Author>
                 <IntroText dangerouslySetInnerHTML={{ __html: introText}}/>

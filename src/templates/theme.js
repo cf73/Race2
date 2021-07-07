@@ -144,6 +144,10 @@ class ThemePage extends React.Component {
 
     const getLink = subtheme => {
       let result = `/subthemes/${kebabCase(subtheme.name)}`
+      
+      if(subtheme.path != undefined){
+        result = subtheme.path.alias
+      }
 
       return result;
     }

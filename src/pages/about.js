@@ -1,156 +1,464 @@
 import React from 'react'
 import styled from 'styled-components'
-import { Link, push,} from 'gatsby'
-import { Overlay, OverlayHeader, OverlayBody }  from '../components/overlay'
+import get from 'lodash/get'
+import kebabCase from 'lodash/kebabCase'
+
 import episodes from '../utils/episodes-data'
-import Layout from "../components/layout"
 
-const queryString = require('query-string');
+import {
+  Layout,
+  FiledUnderLink,
+  Link
+} from '../components'
 
-const HeaderDimmer = styled.div`
-  width: 100%;
-  position: absolute;
-  left:0;
-  right:0;
-  top:0;
-  z-index: -1;
-  height:50vh;
-  /* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#000000+0,d3dde5+100&0.5+1,0+100 */
-  background: -moz-linear-gradient(top, rgba(0,0,0,0.5) 0%, rgba(2,2,2,0.5) 1%, rgba(211,221,229,0) 100%); /* FF3.6-15 */
-  background: -webkit-linear-gradient(top, rgba(0,0,0,0.5) 0%,rgba(2,2,2,0.5) 1%,rgba(211,221,229,0) 100%); /* Chrome10-25,Safari5.1-6 */
-  background: linear-gradient(to bottom, rgba(0,0,0,0.5) 0%,rgba(2,2,2,0.5) 1%,rgba(211,221,229,0) 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
-  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#80000000', endColorstr='#00d3dde5',GradientType=0 ); /* IE6-9 */
+import { graphql } from 'gatsby'
+
+import {
+  white,
+  black,
+  smokegrey,
+  softblack,
+  fogwhite,
+  episodeColors
+} from '../colors'
+
+const Container = styled.div`
+  background-color: ${fogwhite};
+
+  @media (max-width: 812px) { /* mobile */
+
+  }
 `
 
-const Wrapper = styled.div`
-  margin: 250px auto 0px;
-  max-width: 100%;
+const Row = styled.div`
+  display: flex;
+  flex-direction: row;
 `
 
-class ExpandableText extends React.Component {
-    constructor(props) {
-        super(props)
-        this.state = {
-            expanded: false
-        }
-        this.toggleExpand = this.toggleExpand.bind(this)
-    }
+const Column = styled.div`
+  display: flex;
+  flex-direction: column;
+`
 
-    toggleExpand() {
-        this.setState({expanded: !this.state.expanded})
-    }
+const AboutImage = styled.div`
+  height: 365px;
 
-    render() {
-        const { expanded } = this.state
-        return (
-            <div>
-                <div style={{maxHeight: expanded ? '' : '105px', overflow: 'hidden', marginBottom: 15 }}>
-                    {this.props.children}
-                </div>
-                <button className="tag" style={{float: 'right'}} onClick={this.toggleExpand}>{expanded ? "View less" : "View more"}</button>
-            </div>
-        )
-    }
-}
+  background-size: cover !important;
+  background-attachment: fixed;
+  background: ${ props => props.background ? `url(${props.background}) center no-repeat` : null };
 
-const EpisodeItem = ({ episode, queryParams }) => (
-    <div className="row" style={{marginBottom: 25}}>
-        <div className="column">
-            <div style={{background: 'gray', width: 500, height: (500 * 9 / 16)}}/>
-        </div>
-        <div className="column">
-            Episode {episode.episodeNumber}
-            <h2>{episode.title}</h2>
-            <div style={{margin: '0 -15px'}}>
-                <Link to={`?${queryString.stringify({ ...queryParams, transcript: episode.episodeNumber })}`} className="tag">Transcript</Link>
-                <Link to={`?${queryString.stringify({ ...queryParams, credits: episode.episodeNumber })}`} className="tag">Credits</Link>
-                <Link to={`/clips?${queryString.stringify({ ...queryParams, episode: episode.field_episode })}`} className="tag">Clips</Link>
-                {/*<button className="tag">Clips</button>*/}
-            </div>
-            <div>
-                <ExpandableText>
-                    <div dangerouslySetInnerHTML={{
-                        __html: episode.description,
-                    }}/>
-                </ExpandableText>
-            </div>
-        </div>
-    </div>
-)
+  @media (max-width: 812px) { /* mobile */
+    width: 100%;
+    max-width: 100%;
+    margin-left: 0px;
+  }
+`
 
-const getEpisodeByNumber = episodeNumber => episodes.find(episode => episode.episodeNumber === episodeNumber)
-const safeGet = (object, fieldName) => object ? object[fieldName] : null
+const TopContainer = styled(Column)`
+  background-color: ${smokegrey};
+  justify-content: center;
+  align-items: center;
+  min-height: 300px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+`
 
-const closeHandler = () => push(`?`)
+const Quote = styled.div`
+  font-family: ff-tisa-web-pro;
+  font-style: italic;
+  font-weight: normal;
+  line-height: 48px;
+  font-size: 36px;
+  text-align: center;
 
-const CloseButton = styled.div`
-    float: right;
-    color: red;
-    cursor: pointer;
+  color: #F5F5F5;
+
+  max-width: 683px;
+
+  & p {
+    margin: 0;
+  }
+`
+
+const Author = styled(Quote)`
+  font-size: 20px;
+  font-family: 'Quicksand';
+  font-weight: 500;
+  font-style: normal;
+  letter-spacing: 0.012em;
+  opacity: .50;
+`
+
+const SubTitle = styled.div`
+  font-family: Quicksand;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 42px;
+  font-size: 14px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: ${softblack};
+`
+
+const InnerContainer = styled.div`
+  max-width: 1200px;
+  padding-top: 60px;
+  display:flex;
+
+  @media (max-width: 812px) { /* mobile */
+    flex-direction:column;
+  }
+
+
+  .order-link{
+    display: block;
+    font-size: 22px;
+    color: white;
+    background: #475158;
+    margin: 0px auto 25px;
     font-weight: bold;
+    padding: 20px;
+    text-align: center;
+    &:hover{
+      //color: #475158;
+      //background: #fff;
+      opacity: .9;
+      box-shadow: 0px 0px 5px 0px #475158;
+    }
+  }
 `
 
-export default ({ data, transition, location }) => {
-  const queryParams = queryString.parse(location.search)
+const SubColumn = styled.div`
+  flex: ${ props => props.flex ? props.flex : '50%' };
+  //max-width:50%;
+  margin-right: 20px;
 
-  const transcript = queryParams.transcript ? getEpisodeByNumber(queryParams.transcript) : null
-  const credits = queryParams.credits ? getEpisodeByNumber(queryParams.credits) : null
+  @media (max-width: 812px) { /* mobile */
+    margin-right: 0px;
+  }
+`
+
+const Text = styled.div`
+  margin-bottom: 90px;
+
+  font-family: 'ff-tisa-web-pro';
+  font-style: normal;
+  font-weight:  ${ props => props.fontWeight ? props.fontWeight : 'normal'};
+  line-height: 24px;
+  font-size: 17px;
+
+  color: ${softblack};
+`
+
+const CardContainer = styled(Column)`
+  width: 730px;
+  max-width:100%;
+  margin-bottom: 30px;
+
+  background-color: ${props => props.color ? props.color : '#FFDDAA'};
+
+  padding-top: 36px;
+  padding-bottom: 60px;
+  padding-left: 60px;
+  padding-right: 60px;
+`
+
+const EpisodeNumber = styled.div`
+  font-family: Quicksand;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 42px;
+  font-size: 14px;
+  letter-spacing: 0.12em;
+
+  text-transform: uppercase;
+
+  color: ${black};
+`
+
+const EpisodeTitle = styled.div`
+  font-family: Quicksand;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 42px;
+  font-size: 36px;
+
+  color: ${black};
+
+  margin-top: 15px;
+  margin-bottom: 15px;
+`
+
+const EpisodeDescription = styled.div`
+  font-family: 'ff-tisa-web-pro';
+  font-style: normal;
+  font-weight: normal;
+  line-height: 24px;
+  font-size: 17px;
+
+  color: ${black};
+
+  margin-bottom: 20px;
+`
+
+const Card = props => {
+  const {
+    // title,
+    episodeNumber,
+    // field_episode,
+    description,    
+  } = props.data
+  
+  const color = episodeColors[props.episodeKey];
+
+  const {
+    title,
+    field_episode_synopsis,
+    field_synopsis_copyright
+  } = props.synopsis
+
+  const to = `/episodes/${kebabCase(props.number)}`
+  const brief = description.split('</p>')[0].replace('<p>','')
+  // const brief = field_episode_synopsis.processed
 
   return (
-    <Layout location={location}>
-        <Wrapper>
-            <HeaderDimmer />
-            <Overlay id="film-overlay" visible={!!transcript || !!credits} style={transition && transition.style}>
-            {(transcript || credits) &&
-                <OverlayBody>
-                    <OverlayHeader>
-                        <CloseButton onClick={closeHandler}>Close</CloseButton>
-                        <div style={{
-                        textAlign:'center'
-                        }}>
-                            <h1>{transcript ? transcript.title : credits.title}</h1>
-                        </div>
-                    </OverlayHeader>
-                    <div
-                    dangerouslySetInnerHTML={{
-                        __html: transcript ? safeGet(transcript, 'transcript') : safeGet(credits, 'credits'),
-                    }}
-                    />
-                </OverlayBody>
-            }
-            </Overlay>
-            <div className="row">
-                <div className="column _25"/>
-                <div className="column">
-                    <h1>Race: The Power of an Illusion</h1>
-                    <p><strong>Statement from executive producer</strong></p>
-                    <div className="row" style={{margin: '0 -15px'}}>
-                        <div className="column">
-                            <p>Race is one topic where we all think we're experts. Yet ask 10 people to define race or name "the races," and you're likely to get 10 different answers. Few issues are characterized by more contradictory assumptions and myths, each voiced with absolute certainty.</p>
-
-                            <p>In producing this series, we felt it was important to go back to first principles and ask, What is this thing called "race?" - a question so basic it is rarely raised. What we discovered is that most of our common assumptions about race - for instance, that the world's people can be divided biologically along racial lines - are wrong. Yet the consequences of racism are very real.</p>
-
-                            <p>How do we make sense of these two seeming contradictions? Our hope is that this series can help us all navigate through our myths and misconceptions, and scrutinize some of the assumptions we take for granted. In that sense, the real subject of the film is not so much race but the viewer, or more precisely, the notions about race we all hold.</p>
-
-                            <p>We hope this series can help clear away the biological underbrush and leave starkly visible the underlying social, economic, and political conditions that disproportionately channel advantages and opportunities to white people. Perhaps then we can shift the conversation from discussing diversity and respecting cultural difference to building a more just and equitable society.</p>
-
-                            <p><strong>April 2003</strong></p>
-                        </div>
-                        <div>
-                            <div className="tag">Buy on DVD</div>
-                            <br/>
-                            <div className="tag">Stream on demand</div>
-                            <br/>
-                            <div className="tag">Contact</div>
-                        </div>
-                    </div>
-                    <div style={{marginTop: 50}}>
-                        {episodes.map(episode => <EpisodeItem key={`episode-${episode.episodeNumber}`} episode={episode} queryParams={queryParams} />)}
-                    </div>
-                </div>
-                <div className="column _25"/>
-            </div>
-        </Wrapper>
-    </Layout>
+    <CardContainer color={color}>
+      <EpisodeNumber>Episode {episodeNumber}</EpisodeNumber>
+      <EpisodeTitle>{title.trim()}</EpisodeTitle>
+      <EpisodeDescription dangerouslySetInnerHTML={{ __html: brief}}/>
+      <FiledUnderLink
+        style={{paddingLeft: 0}}
+        color={black} 
+        to={to}
+      >
+        Explore
+      </FiledUnderLink>
+    </CardContainer>
   )
 }
+
+const Footer = styled(Column)`
+  align-items: center;
+
+  padding-top: 114px;
+  padding-bottom: 200px;
+`
+
+///
+
+class About extends React.Component {
+  
+  constructor(props) {
+    super(props);
+
+    const quotes = get(this, `props.data.quotes.edges`).map(edge => {
+      const{
+        title,
+        field_critic_quote: {
+          processed
+        }
+      } = edge.node
+
+      return {
+        title,
+        quote: processed
+      }
+    })
+
+    this.quoteIndex = 0
+  
+    this.state = {
+      quotes
+    };
+
+    const self = this
+
+    setInterval(() => {
+  
+      if(quotes.length == self.quoteIndex) self.quoteIndex = 0
+      
+      self.quoteIndex++
+
+      self.forceUpdate()
+
+    }, 6000)
+  }
+
+  componentDidMount() {
+    setTimeout(()=>window.scrollTo(0,0),1)
+  }
+
+  render() {
+    const {
+      quotes
+    } = this.state
+
+    const credits = get(this, `props.data.credits.edges`).map(edge => edge.node)
+    const synopsis = get(this, `props.data.synopsis.edges`).map(edge => edge.node)
+    const taxonomy = get(this, `props.data.taxonomy.edges`).map(edge => edge.node)
+    const transcript = get(this, `props.data.transcript.edges`).map(edge => edge.node)
+
+     const aboutImage = get(this, `props.data.taxonomy.edges[0].node.relationships.field_about_image.localFile.childImageSharp.original.src`)
+
+    const numbers = ['one', 'two', 'three']
+
+    return (
+      <Layout location={this.props.location}>
+        <Container>
+          <TopContainer>
+            <Quote dangerouslySetInnerHTML={{ __html: quotes[this.quoteIndex].quote }}/>
+            <Author> {quotes[this.quoteIndex].title} </Author>
+          </TopContainer>
+
+          <Column style={{alignItems: 'center'}}>
+            <InnerContainer>
+
+                <SubColumn flex="30%">
+                  <AboutImage background={aboutImage}/>
+                  <Text fontWeight="bold" dangerouslySetInnerHTML={{ __html: [taxonomy[0].field_about_image_description.processed] }}>
+                  </Text>
+                </SubColumn>
+                <SubColumn flex="45%">
+                  <SubTitle dangerouslySetInnerHTML={{ __html: [taxonomy[0].field_updated_ep_statement_title.processed] }}>
+                  </SubTitle>
+                  <Text dangerouslySetInnerHTML={{ __html: [taxonomy[0].field_updated_ep_statement.processed] }}>
+                  </Text>
+                </SubColumn>
+
+               <SubColumn flex="25%">
+              
+               {/* <Link
+                    to='http://newsreel.org/video/RACE-THE-POWER-OF-AN-ILLUSION'
+                  >
+                    Order Film
+                  </Link> */}
+
+                  <a class="order-link" style={{cursor: 'pointer', textDecoration: 'none'}} href={'http://newsreel.org/video/RACE-THE-POWER-OF-AN-ILLUSION'}>
+                  Order the video from California Newsreel
+                  </a>
+
+              
+                  <FiledUnderLink
+                    color={black}
+                    to='/credits'
+                  >
+                    Series Credits
+                  </FiledUnderLink>
+
+              </SubColumn>
+          
+            </InnerContainer>
+          </Column>
+
+          <Column style={{alignItems: 'center'}}>
+            {
+              episodes.map( (episode, key) => <Card key={key} data={episode} number={numbers[key]} synopsis={synopsis[key]} episodeKey={key}/>)
+            }
+          </Column>
+
+          <Footer>
+
+          </Footer>
+
+        </Container>
+      </Layout>
+    )
+  }
+}
+
+export default About
+
+export const query = graphql`
+  query AboutQuery {
+
+    quotes: allNodeCriticQuote {
+      edges {
+        node {
+          id
+          title
+          field_critic_quote {
+            processed
+          }
+        }
+      }
+    }
+
+    taxonomy: allTaxonomyTermAboutTheFilmPage {
+      edges {
+        node {
+          id
+          field_updated_ep_statement_title {
+            processed
+          }
+          field_updated_ep_statement {
+            processed
+          }
+          field_series_production_credits {
+            processed
+          }
+          field_about_image_description {
+            processed
+          }
+          relationships {
+            field_about_image {
+              localFile {
+                publicURL
+                childImageSharp {
+                  original {
+                    width
+                    height
+                    src
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+    
+    synopsis: allNodeSynopsis {
+      edges {
+        node {
+          title
+          field_episode_synopsis {
+            processed
+          }
+          field_synopsis_copyright {
+            processed
+          }
+        }
+      }
+    }
+    
+    credits: allNodeEpisodeCredits {
+      edges {
+        node {
+          title
+          field_episode_credits {
+            processed
+          }
+          field_episode_copy {
+            processed
+          }
+        }
+      }
+    }
+    
+    transcript: allNodeTranscript {
+      edges {
+        node {
+          title
+          body {
+            processed
+          }
+          field_cop {
+            processed
+          }
+        }
+      }
+    }
+}
+`
+

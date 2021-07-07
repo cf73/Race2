@@ -4,6 +4,9 @@ import kebabCase from 'lodash/kebabCase'
 import get from 'lodash/get'
 
 import Vimeo from 'react-vimeo'
+import ReactPlayer from 'react-player'
+
+import playButton from '../../assets/images/PlayButton.png';
 
 import {
   FiledUnderLink,
@@ -21,6 +24,9 @@ import {
   softblack,
   white,
   red,
+  smokegrey,
+  episodeColors,
+  fogwhite,
 } from '../../colors'
 
 import reorder from '../../utils/reorder'
@@ -50,26 +56,18 @@ const Container = styled.div`
 const TopContainer = styled.div`
   position: relative;
 
-  display: flex;
-  flex-direction: column;
-
-  justify-content: center;
-  align-items: center;
-
   width: 100%;
   height: auto;
-  min-height: 683px;
 
-  background: ${gradient};
-
+ // background-color: ${ props => props.fieldEpisode ? episodeColors[props.fieldEpisode - 1] : null};
+  background-color: #DBDBDB;
   @media (min-width: 1025px) { /* desktop */
-    background-color: ${ props => props.overlay ? 'rgba(0,0,0,0)' : white };
-    background-image: ${ props => props.overlay ? 'none' : gradient };
+
   }
 
   @media (max-width: 812px) { /* mobile */
-    background-color: ${white};
-    z-index: 1;
+
+
   }
 `
 
@@ -79,14 +77,10 @@ const BottomContaniner = styled.div`
   width: 100%;
   padding-top: 20px;
 
-  z-index: 2;
-
-  background-color: ${softblack};
-  background-image: ${gradient2};
+  background-color: ${smokegrey};
 
   @media (min-width: 1025px) { /* desktop */
-    background-color: ${ props => props.overlay ? 'rgba(0,0,0,0)' : white };
-    background-image: ${ props => props.overlay ? 'none' : gradient2 };
+
   }
 
   @media (max-width: 812px) { /* mobile */
@@ -98,10 +92,11 @@ const getFiledUnder = array => {
   let results = []
 
   if(array)
-  array.map( ({name}) =>
+  array.map( ({name, path}) =>
     results.push({
       name,
-      link: `/subthemes/${kebabCase(name)}`
+      link: path.alias
+      //link: `/subthemes/${kebabCase(name)}`
     })
   )
 
@@ -111,6 +106,7 @@ const getFiledUnder = array => {
 const getTags = array => {
   let results = []
 
+  if(array)
   results = array.map( ({name, relationships}) => {
     return {
       name,
@@ -160,65 +156,78 @@ const Column = styled.div`
 `
 
 const AllEntitiesContainer = styled(Row)`
-  position: absolute;
-  top: 0;
-  right: 0;
+  justify-content: flex-start;
 
-  padding-top: 90px;
-  padding-right: 60px;
+  padding-top: 18px;
+  padding-left: 60px;
 
   z-index: 4;
 
   @media (min-width: 1025px) { /* desktop */
-    
+
   }
 
   @media (max-width: 812px) { /* mobile */
     justify-content: center;
+    padding-right: 0;
   }
 `
 
 const AllEntitiesText = `All ${TICKER.toLowerCase()}s`
 const AllEntities = () => <AllEntitiesContainer>
-  <FiledUnderLink color={softblack} to='/clips'>{AllEntitiesText}</FiledUnderLink>
+  <FiledUnderLink color={softblack} to='/clips' direction={'left'}>{AllEntitiesText}</FiledUnderLink>
 </AllEntitiesContainer>
 
 
 
 const Content = styled(Row)`
-
-  padding-top: 100px;
   width: 100%;
+  max-width: 1360px;
+  margin: 0 auto;
+  padding: 18px 0 72px 0;
+  align-items: flex-start;
 `
 
 const SideBar = styled(Column)`
   display: none;
-  min-width: 400px;
 
   flex: 1;
 
   padding-left: 60px;
-  padding-right: 60px;
+  padding-right: 30px;
 
   @media (min-width: 1025px) { /* desktop */
     display: flex;
+    flex-direction: column;
+    justify-content: top;
   }
 
   @media (max-width: 812px) { /* mobile */
     display: none;
   }
+
+
+  padding: 35px;
+  background: white;
+  border-radius: 15px;
+  height: auto;
+  border:1px solid ${softblack};
 `
 
 const ContentBar = styled(Column)`
   align-items: center;
-  padding-right: 60px;
+  //padding-right: 60px;
+  flex:3;
+  max-width:100%;
 `
 
 const SubTitle = styled.div`
-  font-family: Lato;
-  font-size: 12px;
-  line-height: 28px;
-  letter-spacing: 0.22em;
+  font-family: 'Quicksand';
+  font-weight: 500;
+  font-size: 25px;
+  line-height: 100%;
+  margin-bottom:20px;
+  letter-spacing: 0.12em;
 
   text-transform: uppercase;
 
@@ -227,7 +236,6 @@ const SubTitle = styled.div`
   padding-left: 0;
 
   @media (min-width: 1025px) { /* desktop */
-    padding-left: 15px;
   }
 
   @media (max-width: 812px) { /* mobile */
@@ -247,7 +255,6 @@ const Tags = styled.div`
   overflow: auto;
 
   @media (min-width: 1025px) { /* desktop */
-    padding-left: 15px;
   }
 
   @media (max-width: 812px) { /* mobile */
@@ -261,21 +268,21 @@ const Tag = styled.div`
   padding-left: 10px;
   padding-right: 10px;
 
-  font-family: Lato;
-  font-size: 15px;
+  font-family: 'Quicksand';
+  font-weight: 500;
+  font-size: 14px;
   line-height: 36px;
-  letter-spacing: 0.22em;
-  font-weight: 600;
+  letter-spacing: 0.12em;
 
   text-transform: uppercase;
-
-  color: ${red};
 
   margin-right: 15px;
   margin-top: 15px;
 
   border-radius: 3px;
-  background-color: ${white};
+
+  background-color: #ffb558;
+  border: 1px solid ${softblack};
 `
 
 const CardsContainer = styled.div`
@@ -305,46 +312,108 @@ const CardsContainer = styled.div`
   }
 `
 
-const IMAGE_WIDTH = 663
-const IMAGE_HEIGHT = 391
+const IMAGE_WIDTH = 950
+const IMAGE_HEIGHT = 600
+
+const ContentTitle = styled.div`
+  display: block;
+  flex-direction: row;
+
+  width: ${IMAGE_WIDTH}px;
+
+  text-align:left;
+  h1{
+    margin:0px 0px 10px;
+  }
+  h3{
+    margin:0px 0px 20px;
+  }
+  @media (max-width: 812px) { /* mobile */
+    max-width: 100%;
+  }
+`
 
 const MainImage = styled.div`
+  position:relative;
   cursor: pointer;
 
   display: flex;
   flex-direction: row;
 
-  color: ${white};
-
   width: ${IMAGE_WIDTH}px;
   height: ${IMAGE_HEIGHT}px;
 
-  border-radius: 3px;
-  background-color: ${white};
+  border-radius: 0px;
 
   background-size: cover !important;
   background-attachment: fixed;
   background: ${ props => props.background ? `url(${props.background}) center no-repeat` : null };
+  background-color: ${softblack};
 
   @media (min-width: 1025px) { /* desktop */
     
   }
 
   @media (max-width: 812px) { /* mobile */
-    width: 100vw;
+    max-width: 100%;
+    width: 100%;
+    display: block;
+    height: auto;
+    min-height:300px;
+    .vimeo-embed{
+      height: 300px!important;
+      width: 100%!important;
+      max-height: 100%!important;
+    }
   }
+
+  .vimeo-embed{
+    background:#000;
+  }
+
 `
 
 const Title = styled.div`
-  width: ${IMAGE_WIDTH}px;
+  width: calc(${IMAGE_WIDTH}px - 60px);
 
-  font-family: 'Tisa Pro';
-  font-size: 20px;
-  line-height: 24px;
+  font-family: 'Quicksand';
 
-  margin-top: 15px;
+  font-size: 14px;
+  line-height: 18px;
+
+  background-color: ${fogwhite};
+  padding: 15px 30px 24px 30px;
+  border-bottom-left-radius: 15px;
+  border-bottom-right-radius: 15px;
 
   color: ${softblack};
+`
+const ClipDescription = styled.div`
+  width: calc(${IMAGE_WIDTH}px - 60px);
+
+  font-family: 'Quicksand';
+
+  font-size: 24px;
+  line-height: 145%;
+
+  background-color: ${fogwhite};
+  padding: 15px 30px 24px 30px;
+  border-radius: 0px;
+
+  margin-top:20px;
+
+  color: ${softblack};
+  //border:1px solid ${softblack};
+  p{
+    margin-top:0px;
+  }
+  p:first-child, p:last-child{
+    margin:0px
+  }
+
+  @media (max-width: 812px) { /* mobile */
+    max-width: 100%;
+  }
 `
 
 const Footer = styled(Row)`
@@ -390,8 +459,9 @@ const MobileColumn = styled(Column)`
 `
 
 const MobileSubTitle = styled(SubTitle)`
-  padding-left: 100px;
+  padding-left: 60px;
   padding-bottom: 30px;
+  color: ${fogwhite};
 
   @media (max-width: 812px) { /* mobile */
     padding-left: 20px;
@@ -399,6 +469,8 @@ const MobileSubTitle = styled(SubTitle)`
 `
 
 const CenteredContainer = styled.div`
+  position: absolute;
+
   display: flex;
   justify-content: center;
   align-items: center;
@@ -406,17 +478,40 @@ const CenteredContainer = styled.div`
   height: 100%;
 `
 
+const Image = styled.img`
+  width: 53px;
+  height: 53px;
+  position: absolute;
+  bottom: 15px;
+  left: 12px;
+
+  @media (min-width: 1025px) { /* desktop */
+
+  }
+
+  @media (max-width: 812px) { /* mobile */
+    
+  } 
+`
+
 const nodeName = 'nodeClip'
 
 class Clip extends React.Component {
   constructor(props) {
     super(props);
+    
+    const background = get(props, `data.${nodeName}.relationships.field_poster_image.localFile.childImageSharp.original.src`)
   
     this.state = {
       playing: false,
       tagName: null,
-      tagCards: []
+      tagCards: [],
+      background
     };
+  }
+
+  componentDidMount() {
+    setTimeout(()=>window.scrollTo(0,0),1)
   }
 
   renderOverlay = (name, cards) => {
@@ -427,19 +522,33 @@ class Clip extends React.Component {
     return (
       <Overlay visible={name}>
         <OverlayBody>
-          <Row>
-            <Row style={{flex: 1, justifyContent: 'center'}}>
+          <Row style={{marginBottom: 120}}>
+            <Row style={{
+              position: 'fixed',
+              flex: 1, 
+              zIndex: 5,
+              justifyContent: 'center',
+              top: 0, left: 0, right: 0
+            }}>
               <TagTitle>{name}</TagTitle>
             </Row>
-            <CloseButton
-              style={{marginRight: 30}}
-              color={black}
-              simple={true} 
-              onClick={ () => this.setState({
-                tagName: null,
-                tagCards: []
-              })}
-            />
+            <Row
+              style={{
+                position: 'fixed',
+                zIndex: 5,
+                top: 0,
+                right: 30
+              }}
+            >
+              <CloseButton
+                color={black}
+                simple={true} 
+                onClick={ () => this.setState({
+                  tagName: null,
+                  tagCards: []
+                })}
+              />
+            </Row>
           </Row>
           <CardsContainer>
             { shuffledCards }
@@ -454,18 +563,50 @@ class Clip extends React.Component {
   render() {
     const {tagName, tagCards} = this.state
     const {overlay} = this.props
+    const fieldEpisode = get(this,`props.data.${nodeName}.field_episode`);
 
-    const background = get(this, `props.data.${nodeName}.relationships.field_poster_image.localFile.childImageSharp.original.src`)
-    const videoURL = get(this, `props.data.${nodeName}.field_external_video_url.uri`)
-    const videoId = videoURL ? videoURL.split('/').pop() : ''
+
+    // const background = get(this, `props.data.${nodeName}.relationships.field_poster_image.localFile.childImageSharp.original.src`)
+    let videoURL = get(this, `props.data.${nodeName}.field_external_video_url.uri`)
+    let videoId = videoURL ? videoURL.split('/').pop() : ''
+
+    let videoPlayer;
+
+    // console.log(videoURL)
+    
+    if(videoURL.includes('youtube.com')){
+      videoPlayer = <ReactPlayer 
+                      style={{width: IMAGE_WIDTH, height: IMAGE_HEIGHT}}
+                       url={videoURL} />
+    }else{
+      videoPlayer = <Vimeo
+                      style={{width: IMAGE_WIDTH, height: IMAGE_HEIGHT}}
+                      videoId={videoId}
+                      playButton={
+                        <CenteredContainer>
+                          <Image src={playButton} onClick={() => this.setState({background:null})}/>
+                        </CenteredContainer>
+                      }
+                    />
+    }
+
     const title = get(this, `props.data.${nodeName}.title`)
+    const description = get(this, `props.data.${nodeName}.field_overview.processed`)
+
     const introText = get(this, `props.data.${nodeName}.description.processed`)
 
     const filedUnder = getFiledUnder(get(this, `props.data.${nodeName}.relationships.field_belongs_to_subtheme`))
     const tags = getTags(get(this, `props.data.${nodeName}.relationships.field_tags`))
-    console.log(tags)
 
     const relatedContent = getRelatedContent(get(this, `props.data.${nodeName}.relationships.field_article_related_content`))
+
+    let subtitle = null
+
+    const path = get(this, `props.data.${nodeName}.path`)
+    console.log(this);
+    if(fieldEpisode){
+      subtitle = "Episode "+fieldEpisode;
+    }
 
     const renderTags = () => (
       <Tags>
@@ -489,37 +630,29 @@ class Clip extends React.Component {
         {
           this.renderOverlay(tagName, tagCards)
         }
-        <TopContainer overlay={overlay}>
+        <TopContainer overlay={overlay} fieldEpisode={fieldEpisode}>
           { !overlay && <AllEntities /> }
           <Content>
-            <SideBar>
-              <SubTitle>filed under:</SubTitle>
+            
+            <ContentBar>
+              <ContentTitle>
+                <h1>{title}</h1>
+                <h3>{subtitle}</h3>
+              </ContentTitle>
+              <MainImage background={this.state.background}>
+                {videoPlayer}
+
+              </MainImage>
+              <ClipDescription dangerouslySetInnerHTML={{ __html: description }} />
+            </ContentBar>
+            {/* <SideBar>
+            <SubTitle>explore:</SubTitle>
               {
-                filedUnder.map( ({name, link}, key) => <FiledUnderLink key={key} to={link} color={red}>{name}</FiledUnderLink>)
-              }
-              {
-                tags.length > 0
-                &&
-                <SubTitle style={{marginTop: 90}}>explore:</SubTitle>
+                filedUnder.map( ({name, link}, key) => <FiledUnderLink key={key} to={link} color={softblack}>{name}</FiledUnderLink>)
               }
               { renderTags() }
-            </SideBar>
-            <ContentBar>
-              <MainImage background={background}>
-                <Vimeo
-                  style={{width: IMAGE_WIDTH, height: IMAGE_HEIGHT}}
-                  videoId={videoId}
-                  playButton={
-                    <CenteredContainer>
-                      <PlayButton
-                        size={72}
-                      />
-                    </CenteredContainer>
-                  }
-                />
-              </MainImage>
-              <Title>{title}</Title>
-            </ContentBar>
+            </SideBar> */}
+
           </Content>
         </TopContainer>
         <BottomContaniner overlay={overlay}>

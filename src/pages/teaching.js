@@ -19,11 +19,24 @@ const Container = styled.div`
   }
 `
 
-export default ({ data, location }) => <Layout location={location}>
-  <Container>
-    <Teaching data={data} />
-  </Container>
-</Layout>
+class TeachingContainer extends React.Component {
+  
+  componentDidMount() {
+    setTimeout(()=>window.scrollTo(0,0),1)
+  }
+
+  render() {
+    return (
+      <Layout location={this.props.location}>
+        <Container>
+          <Teaching data={this.props.data} />
+        </Container>
+      </Layout>
+    )
+  }
+}
+
+export default TeachingContainer
 
 export const query = graphql`
   query TeachingQuery {
@@ -57,14 +70,14 @@ export const query = graphql`
         }
       }
     }
-    allNodeArticle(filter: { field_include_in_the_teaching_se: { eq: true }}) {
+    allNodeArticle(filter: { field_is_additional_resource: { eq: true }}) {
       edges {
         node {
           ... ArticleFragment
         }
       }
     }
-    allNodeInterview(filter: { field_include: { eq: true }}) {
+    allNodeInterview(filter: { field_is_additional_resource: { eq: true }}) {
       edges {
         node {
           ... InterviewFragment

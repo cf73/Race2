@@ -1,7 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
 import FlipMove from 'react-flip-move'
-import kebabCase from 'lodash/kebabCase'
+import kebabCase from '../../utils/kebabCase'
 // import get from 'lodash/get'
 
 import Filters from '../Filters'
@@ -27,7 +27,8 @@ import getCards from '../../utils/getCards'
 
 import {
   white,
-  softblack
+  softblack,
+  smokeblue
 } from '../../colors'
 
 import hexToRGB from '../../utils/hexToRGB'
@@ -79,13 +80,12 @@ const FlipContainer = styled(FlipMove)`
   overflow: auto;
 
   padding-bottom: 286px;
-  width: 100vw;
 
   justify-content: center;
 `
 
 const Container = styled.div`
-  background-color: #222222;
+  background-color: ${smokeblue};
   backdrop-filter: blur(5px);
 
   border-bottom: solid thin grey;
@@ -114,7 +114,7 @@ class Subtheme extends React.Component {
   }
 
   toggleFilter(value) {
-    console.log('toggleFilter', value)
+    // console.log('toggleFilter', value)
     if (this.state.filter === value) {
       this.setState({filter: null})
     } else {
@@ -180,8 +180,11 @@ class Subtheme extends React.Component {
       return
     }*/
 
-    window.location = `${entitiesLink}/${kebabCase(data.title)}`
-
+    if(data.path != undefined){
+      window.location = data.path.alias
+    }else{
+      window.location = `${entitiesLink}/${kebabCase(data.title)}`
+    }
     /*this.setState({
       popup: true,
       card: {...data, link},
@@ -244,6 +247,8 @@ class Subtheme extends React.Component {
       reorder(rawCards, this.order)
 
     allCards = allCards.filter( allCards => !!allCards)
+
+    allCards = allCards.filter( card => card.props.data.title != 'EMPTY')
 
     // const title = card && card.title ? card.title : '';
     // const link = card && card.link ? card.link : '';

@@ -11,7 +11,8 @@ import { graphql } from 'gatsby'
 
 import {
   white,
-  black
+  black,
+  fogwhite
 } from '../colors'
 
 const Container = styled.div`
@@ -28,8 +29,11 @@ const FiltersContainer = styled.div`
   font-size: 12px;
   line-height: 24px;
   letter-spacing: 0.22em;
-  font-family: 'Lato';
-  color: ${props => props.color ? props.color : black};
+  font-family: 'Quicksand';
+  font-weight: 500;
+  margin: 0 auto;
+  padding-bottom: 15px;
+  color: ${fogwhite};
   opacity: 0.8;
 `
 
@@ -68,10 +72,29 @@ class QA extends React.Component {
     };
   }
 
+  componentWillUnmount() {
+    if(!typeof localStorage === "undefined"){
+      localStorage.setItem('qaFilter', JSON.stringify(this.state))
+    }
+  }
+  componentWillMount() {
+    if(!typeof localStorage === "undefined"){
+      const filter = JSON.parse(localStorage.getItem('qaFilter'))
+      this.setState(filter)
+    }
+  }
+
   render() {
     const title = "Q&A"
-    const faqs = get(this, `props.data.allNodeFaq.edges`).map(edge => edge.node)
-    const description = get(this, `props.data.taxonomyTermQAPage.description.processed`)
+    let faqs = get(this, `props.data.allNodeFaq.edges`).map(edge => edge.node)
+    let description = get(this, `props.data.taxonomyTermQAPage.description.processed`)
+
+    faqs.sort(function(a, b){
+      return a.field_question_number-b.field_question_number
+    })
+
+
+    description = '<h2>Ask the Scholars</h2>'+description
 
     const props = {
       title,
@@ -105,7 +128,7 @@ export const query = graphql`
         processed
       }
     }
-    allNodeFaq {
+    allNodeFaq(filter: { title: { ne: "EMPTY" }}) {
       edges {
         node {
           ...FullQAFragment

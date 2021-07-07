@@ -5,22 +5,32 @@ import get from 'lodash/get'
 
 import {
   SVGChevron,
-  FiledUnderLink
+  FiledUnderLink,
+  Overlay,
+  OverlayBody,
+  CloseButton,
+  TagTitle
 } from '../'
+
+import getCards from '../../utils/getCards'
 
 import {
   white,
-  red,
+
+  black,
   softblack,
-  teachingBlue
 } from '../../colors'
+
+import reorder from '../../utils/reorder'
+import shuffle from '../../utils/shuffle'
+
+const range = require('range')
 
 const PADDING = 138;
 const PADDING_TABLET = 80;
 
 const Column = styled.div`
-  display: flex;
-  flex-direction: column;
+
 `
 
 const Row = styled.div`
@@ -36,16 +46,10 @@ const TopContainer = styled(Row)`
 
   align-items: center;
 
-  background-color: ${props => props.open ? teachingBlue : white};
-
-  transition: all 0.3s ease-out;
-
-  padding-left: ${PADDING_TABLET}px;
-  padding-right: ${PADDING_TABLET}px;
+  border-bottom: solid black ${props => props.open ? 0 : '1px'};
 
   @media (min-width: 1025px) { /* desktop */
-    padding-left: ${PADDING}px;
-    padding-right: ${PADDING}px;
+ 
   }
 
   @media (max-width: 812px) { /* mobile */
@@ -54,14 +58,13 @@ const TopContainer = styled(Row)`
 `
 
 const Title = styled.div`
-  font-family: 'Neuton';
-  font-size: 36px;
-  font-weight: 600;
-  line-height: 36px;
+  font-family: 'Quicksand';
+  font-weight: 500;
+  font-size: 20px;
+  line-height: 24px;
 
-
-  padding-top: 60px;
-  padding-bottom: 60px;
+  padding-top: 18px;
+  padding-bottom: 18px;
 
   margin-right: 10px;
 `
@@ -97,16 +100,10 @@ const ContentPane = styled.div`
   overflow: hidden;
 
   max-height: ${props => props.open ? 'auto' : 0};
-  background-color: ${props => props.open ? teachingBlue : white};
-
-  padding-left: ${PADDING_TABLET}px;
-  padding-right: ${PADDING_TABLET}px;
 
   @media (min-width: 1025px) { /* desktop */
     flex-direction: row;
 
-    padding-left: ${PADDING}px;
-    padding-right: ${PADDING}px;
   }
 
   @media (max-width: 812px) { /* mobile */
@@ -116,9 +113,9 @@ const ContentPane = styled.div`
 
 const SmallTitle = styled.div`
   font-family: 'Quicksand';
-  font-size: 24px;
-  font-weight: 600;
-  line-height: 30px;
+  font-size: 20px;
+  font-weight: 500;
+  line-height: 24px;
 
   letter-spacing: 0.02em;
 
@@ -133,18 +130,22 @@ const Text = styled.div`
   & > ul > li {
     margin-left: -1em;
   }
-  font-size: 20px;
-  line-height: 28px;
-  font-family: 'Neuton';
+  font-size: 17px;
+  line-height: 24px;
+  font-family: 'ff-tisa-web-pro';
   margin-bottom: 20px;
+
+  & p {
+    margin: 0;
+  }
 `
 
 const SubTitle = styled.div`
   font-family: 'Quicksand';
   font-weight: 500;
-  font-size: 12px;
-  line-height: 28px;
-  letter-spacing: 0.22em;
+  font-size: 14px;
+  line-height: 30px;
+  letter-spacing: 0.12em;
 
   text-transform: uppercase;
 
@@ -160,7 +161,7 @@ const SubTitle = styled.div`
 `
 
 const Tags = styled(Column)`
-  margin-bottom: 50px;
+  margin-bottom: 60px;
 
   @media (min-width: 1025px) { /* desktop */
     
@@ -172,17 +173,18 @@ const Tags = styled(Column)`
 `
 
 const Tag = styled.div`
+  cursor: pointer;
   padding: 3px 15px;
+
+  display: inline-block;
 
   font-family: 'Quicksand';
   font-weight: 500;
   font-size: 14px;
   line-height: 36px;
-  letter-spacing: 0.22em;
+  letter-spacing: 0.12em;
 
   text-transform: uppercase;
-
-  color: ${red};
 
   margin-right: 15px;
   margin-top: 15px;
@@ -196,6 +198,7 @@ const Grade = styled.div`
   font-weight: 500;
   font-size: 30px;
   line-height: 30px;
+  margin-bottom: 60px;
 
   color: ${softblack};
 
@@ -203,6 +206,7 @@ const Grade = styled.div`
 `
 
 const ContentColumn = styled(Column)`
+  padding-bottom: 90px;
   
   @media (min-width: 1025px) { /* desktop */
     max-width: 50%;
@@ -218,6 +222,7 @@ const SideColumn = styled.div`
   display: flex;
   flex-direction: row;
   flex: 1;
+
 
   @media (min-width: 1025px) { /* desktop */
     flex-direction: column;
@@ -245,17 +250,6 @@ const ViewButton = styled(Row)`
 
   justify-content: center;
 
-  margin-top: 50px;
-  margin-bottom: 20px;
-
-  background-color: ${white};
-  box-shadow: 0px 3px 3px rgba(0,0,0,0.16);
-
-  padding-left: 30px;
-  padding-right: 30px;
-  padding-top: 10px;
-  padding-bottom: 10px;
-
   @media (min-width: 1025px) { /* desktop */
     
   }
@@ -267,7 +261,6 @@ const ViewButton = styled(Row)`
 
 const ViewLessonPlan = props => <ViewButton {...props}>
   <FiledUnderLink 
-    color={red}
     to={props.to}
     style={{paddingTop: 0}}
   >
@@ -289,16 +282,106 @@ const BottomRow = styled(Row)`
   }
 `
 
+const CardsContainer = styled.div`
+  display: flex;  
+  flex-direction: row; 
+  flex-wrap: wrap;
+
+  justify-content: flex-start;
+  padding-left: 50px;
+  padding-right: 50px;
+  padding-bottom: 70px;
+
+  @media (min-width: 1025px) { /* desktop */
+    justify-content: center;
+    padding-left: 0;
+    padding-right: 0;
+    padding-bottom: 200px;
+  }
+
+  @media (max-width: 812px) { /* mobile */
+    justify-content: center;
+    align-items: center;
+    padding-left: 0;
+    padding-right: 0;
+
+    min-width: 100vw;
+  }
+`
+
+const getTags = array => {
+  let results = []
+
+  if(array)
+  results = array.map( ({name, relationships}) => {
+    return {
+      name,
+      cards: relationships
+    }
+  })
+
+  return results
+}
+
 class PlanPane extends React.Component {
   constructor(props) {
     super(props);
   
     this.state = {
+      tagName: null,
+      tagCards: [],
       open: false
     };
   }
 
+  renderOverlay = (name, cards) => {
+    const tagsContent = getCards(cards)
+    const order = shuffle(range.range(tagsContent.length))
+    const shuffledCards = reorder(tagsContent, order)
+
+    return (
+      <Overlay visible={name}>
+        <OverlayBody>
+          <Row style={{marginBottom: 120}}>
+            <Row style={{
+              position: 'fixed',
+              flex: 1,
+              zIndex: 5,
+              justifyContent: 'center',
+              top: 0, left: 0, right: 0
+            }}>
+              <TagTitle>{name}</TagTitle>
+            </Row>
+            <Row
+              style={{
+                position: 'fixed',
+                top: 0,
+                zIndex: 5,
+                right: 30
+              }}
+            >
+              <CloseButton
+                color={black}
+                simple={true} 
+                onClick={ () => this.setState({
+                  tagName: null,
+                  tagCards: []
+                })}
+              />
+            </Row>
+          </Row>
+          <CardsContainer>
+            { shuffledCards }
+          </CardsContainer>
+        </OverlayBody>
+      </Overlay>
+    )
+  }
+
+  ///
+
   render() {
+    const {tagName, tagCards} = this.state
     const {open} = this.state
     const title = get(this, 'props.data.title')
     const overview = get(this, 'props.data.field_overview.processed')
@@ -307,12 +390,32 @@ class PlanPane extends React.Component {
     const grade = get(this, 'props.data.field_grade_levels.processed')
 
     let subjects = get(this, 'props.data.relationships.field_subject_tags')
-    subjects = subjects ? subjects.map( ({name}) => name) : subjects
+    const tags = subjects ? getTags(subjects) : []
 
-    const lessonLink = `/lessons/${kebabCase(title)}`
+    //const lessonLink = `/lessons/${kebabCase(title)}`
+    const lessonLink = get(this, 'props.data.path.alias')
+    const renderTags = () => (
+      <Tags>
+        {
+          tags.map( ({name, cards}, key) => <Tag
+            key={key}
+            onClick={ () => this.setState({
+                tagName: name,
+                tagCards: cards
+              })
+            }
+          >
+            {name}
+          </Tag>)
+        }
+      </Tags>
+    )
     
     return (
       <Container>
+        {
+          this.renderOverlay(tagName, tagCards)
+        }
         <TopContainer
           open={open}
           onClick={() => this.setState({open: !open})}
@@ -322,23 +425,17 @@ class PlanPane extends React.Component {
         </TopContainer>
         <ContentPane open={open}>
           <ContentColumn>
-            <SmallTitle>Overview</SmallTitle>
+            <SubTitle>Overview</SubTitle>
             <Text dangerouslySetInnerHTML={{ __html: overview }}/>
 
-            <SmallTitle>Objectives</SmallTitle>
+            <SubTitle>Objectives</SubTitle>
             <Text dangerouslySetInnerHTML={{ __html: objectives }}/>
           </ContentColumn>
           <Column>
             <SideColumn>
               <SideInnerColumn>
                 <SubTitle>subjects</SubTitle>
-                <Tags>
-                  {
-                    subjects && subjects.map( (name, key) => <Row key={key}>
-                      <Tag>{name}</Tag>
-                    </Row>)
-                  }
-                </Tags>
+                { subjects && renderTags() }
               </SideInnerColumn>
 
               <SideInnerColumn>
@@ -346,10 +443,12 @@ class PlanPane extends React.Component {
                 <Grade dangerouslySetInnerHTML={{ __html: grade }} />
               </SideInnerColumn>
 
+              <SideInnerColumn>
+                <ViewLessonPlan to={lessonLink}/>
+              </SideInnerColumn>
             </SideColumn>
 
             <BottomRow>
-              <ViewLessonPlan to={lessonLink}/>
             </BottomRow>
           </Column>
         </ContentPane>

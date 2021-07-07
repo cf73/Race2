@@ -1,11 +1,18 @@
 import React from 'react'
 
+import { navigate } from "gatsby"
+
 import {
   ArticleCard,
   ClipCard,
   QACard,
   InterviewCard,
-  QuickFactCard
+  QuickFactCard,
+  ThemeCard,
+  LessonPlanCard,
+  ExternalResourceCard,
+  HandoutCard,
+  AdditionalResourceCard,
 } from '../components/cards'
 
 const generate = (Component, key, object, onOpen) => <Component 
@@ -32,7 +39,14 @@ const generateArray = (array, queryFilter, key, Component, onOpen) => {
 }
 
 const getCards = (cards, queryFilter, onOpen) => {
-  if(!onOpen) onOpen = link => window.location = link
+  if(!onOpen) onOpen = link => {
+    if(link.startsWith("http") === true){
+      window.location.href = link;
+    }else{
+      navigate(link)
+    }
+  }
+  
 
   let {
     articles,
@@ -40,6 +54,11 @@ const getCards = (cards, queryFilter, onOpen) => {
     faqs,
     interviews,
     quickfacts,
+    themes,
+    lessonplans,
+    externalresources,
+    handouts,
+    additionalresources
   } = cards
 
   if(!articles) articles = []
@@ -47,12 +66,22 @@ const getCards = (cards, queryFilter, onOpen) => {
   if(!faqs) faqs = []
   if(!interviews) interviews = []
   if(!quickfacts) quickfacts = []
+  if(!themes) themes = []
+  if(!lessonplans) lessonplans = []
+  if(!externalresources) externalresources = []
+  if(!handouts) handouts = []
+  if(!additionalresources) additionalresources = []
 
   articles = generateArray(articles, queryFilter, 'article', ArticleCard, onOpen)
   clips = generateArray(clips, queryFilter, 'clip', ClipCard, onOpen)
   faqs = generateArray(faqs, queryFilter, 'qa', QACard, onOpen)
   interviews = generateArray(interviews, queryFilter, 'interview', InterviewCard, onOpen)
   quickfacts = generateArray(quickfacts, queryFilter, 'quickfact', QuickFactCard, onOpen)
+  themes = generateArray(themes, queryFilter, 'themes', ThemeCard, onOpen)
+  lessonplans = generateArray(lessonplans, queryFilter, 'lessonplans', LessonPlanCard, onOpen)
+  externalresources = generateArray(externalresources, queryFilter, 'externalresources', ExternalResourceCard, onOpen)
+  handouts = generateArray(handouts, queryFilter, 'handout', HandoutCard, onOpen)
+  additionalresources = generateArray(additionalresources, queryFilter, 'additionalresources', AdditionalResourceCard, onOpen)
 
   return [
     ...articles,
@@ -60,6 +89,11 @@ const getCards = (cards, queryFilter, onOpen) => {
     ...faqs,
     ...interviews,
     ...quickfacts,
+    ...themes,
+    ...lessonplans,
+    ...externalresources,
+    ...handouts,
+    ...additionalresources,
   ]
 }
 

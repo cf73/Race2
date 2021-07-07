@@ -1,6 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
-import kebabCase from 'lodash/kebabCase'
+import kebabCase from '../../utils/kebabCase'
 
 import Description from './Description'
 import Card from '../Card'
@@ -9,8 +9,9 @@ import SVGArrow from '../SVGArrow'
 import {
   red,
   interviewColors,
-  interviewTickerColor,
-  softblack
+  interviews,
+  softblack,
+  fogwhite
 } from '../../colors'
 
 const Container = styled(Card)`
@@ -20,14 +21,24 @@ const Container = styled(Card)`
   flex-direction: column;
   justify-content: center;
 
-  background: linear-gradient(to bottom, ${interviewColors[0]} 0%, ${interviewColors[1]} 100%);
-
+  background-color: ${fogwhite};
   color: ${softblack};
+  box-shadow: 0px 0px 30px rgba(0, 0, 0, 0.17);
 
   padding-left: 15px;
   padding-right: 15px;
 
   z-index: 1;
+
+  & .hoverExpand{
+    transition:all 1s; 
+    max-height:0px;
+    overflow:hidden;
+  }
+  &:hover .hoverExpand{
+    max-height:300px;
+  }
+
 `
 
 const TopImage = styled.div`
@@ -38,8 +49,7 @@ const TopImage = styled.div`
   z-index: -1;
 
   width: 100%;
-  height: 310px;
-  
+  height: 100%;
  
   background: ${ props => props.background ? `url(${props.background}) center no-repeat` : null };
   background-size: cover;
@@ -49,12 +59,11 @@ const TopBlock = styled.div`
   position: relative;
 
   width: auto;
-  height: 310px;
 
   display: flex;
   flex-direction: row;
-  justify-content: center;
-  align-items: center;
+  flex: 100;
+  align-self: stretch;
 
   padding-right: 15px;
   padding-left: 15px;
@@ -72,11 +81,11 @@ const InnerContainer = styled.div`
 `
 
 const IntervieweeName = styled.div`
-  font-family: 'Neuton';
-  color: white;
-  font-size: 42px;
-  line-height: 42px;
-  padding-bottom: 15px;
+  font-family: 'Quicksand';
+  font-weight: 600;
+  font-size: 20px;
+  letter-spacing: 0.00em;
+  line-height: 115%;
 `
 
 const Ticker = styled.div`
@@ -89,22 +98,22 @@ const Ticker = styled.div`
   font-weight: 500;
   font-size: 12px;
   line-height: 30px;
-  letter-spacing: 0.22em;
+  letter-spacing: 0.12em;
 
   border-top-right-radius: 3px;
-  background-color: ${interviewTickerColor};
+  background-color: ${interviews};
 
-  padding: 5px 15px;
+  padding: 3px 15px;
   text-transform: uppercase;
 `
 
 const BottomBlock = styled.div`
-  flex: 1;
+  flex: auto;
   display: flex;
   flex-direction: column;
   padding: 15px;
-
-
+  align-self: flex-end;
+  padding: 12px 30px 15px 30px;
 `
 
 const Bio = styled.div`
@@ -142,7 +151,8 @@ export class InterviewCard extends React.Component {
     const { data = {}, onOpen } = this.props
     const interview = data;
     
-    const link = `/interviews/${kebabCase(interview.title)}` 
+    //const link = `/interviews/${kebabCase(interview.title)}` 
+    const link = interview.path.alias
     const background = interview.relationships.field_interviewee.localFile.publicURL;
     const description = interview.field_interview_summary.processed;
 
@@ -151,13 +161,14 @@ export class InterviewCard extends React.Component {
 
     return (
       <Container onClick={ () => onOpen(link)} >
-        <TopImage  background={background}/>
+        
         <InnerContainer>
           <TopBlock>
+            <TopImage  background={background}/>
             <Ticker>interview</Ticker>
           </TopBlock>
           <BottomBlock>
-            
+            <IntervieweeName>{interviewee}</IntervieweeName>
             <Description>{description}</Description>
             <Row>
               <Bio dangerouslySetInnerHTML={{ __html: bio }}/>

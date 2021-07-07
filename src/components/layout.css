@@ -22,7 +22,9 @@ body.modal-open {
   width: 100%;
   height: 100%;
 }
-
+.vimeo-embed{
+  background:black;
+}
 .vimeo-embed > iframe {
   width: 100%;
   height: 100%;
@@ -32,4 +34,8 @@ body.modal-open {
   background-image: none !important;
 }
 
-@import url('https://fonts.googleapis.com/css?family=Neuton:200,300,400,400i,700,800|Quicksand:300,400,500,700');
+@import url('https://fonts.googleapis.com/css?family=Quicksand:300,400,500,700');
+
+@import url('//fast.fonts.net/cssapi/26671be6-7c3e-4ffd-89fb-8dc9987a8d71.css');
+
+@import url('https://use.typekit.net/pte4pny.css');

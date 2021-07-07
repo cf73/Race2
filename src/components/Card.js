@@ -21,15 +21,15 @@ class CardWrapper extends React.Component {
   }
 }
 
-const WIDTH = 462;
-const HEIGHT = 341;
+const HEIGHT = 336;
+const WIDTH = 306;
 
 const CardGridItem = styled.div`
   position: relative;
   float: left;
   display: inline-block;
   
-  margin: 10px;
+  margin: 15px;
 
   color: black;
 
@@ -64,17 +64,15 @@ const StyledCard = styled(Card)`
   position: relative;
   display: block;
   
-  height: ${WIDTH}px;
-  width: ${HEIGHT}px;
+  height: ${HEIGHT}px;
+  width: ${WIDTH}px;
 
   background-color: ${white};
-  border-radius: 3px;
+  border-radius: 15px;
   overflow: hidden;
 
-  box-shadow: 0px 3px 6px rgba(0,0,0,0.16);
   transition: all .3s;
   
-  font-family: "ff-tisa-web-pro";
   vertical-align: top;
 
   color: inherit;
